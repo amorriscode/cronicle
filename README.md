@@ -1,6 +1,6 @@
 # cronicle
 
-A journal for your terminal.
+A journal in your terminal.
 
 As developers, it's easy to get lost in the weeds. `cronicle` helps you keep track of your todo list, your daily work log, and your [brag doc](https://jvns.ca/blog/brag-documents/).
 
