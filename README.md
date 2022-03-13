@@ -35,7 +35,9 @@ Debug infinite loop on /status page
 
 ### Daily Log
 
-Daily logs are stored in a file that has the date (eg. `2022-03-1`) but each individual log item is stored as a separate file. This allows you to write as much detail as you'd like for an item.
+Daily logs are stored in a single Markdown file that has the date (eg. `2022-03-1`). This allows you to write as much detail as you'd like for an item.
+
+When a todo item is completed, it will automatically get added to a To Do section in the daily log.
 
 ```yaml
 ---
@@ -45,7 +47,13 @@ tags:
 - pr
 ---
 
-Reviewed [PR](https://github.com/12products/warroom-frontend/pull/46) for updating UI during create events
+## To Do
+
+- [x] Review PR for updating UI during create events
+
+## Logs
+
+- Reviewed [PR](https://github.com/12products/warroom-frontend/pull/46) for updating UI during create events
 ```
 
 ### Brag Item

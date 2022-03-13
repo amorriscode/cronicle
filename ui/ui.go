@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"cronicle/ui/components/daily"
 	"cronicle/ui/components/help"
 	"cronicle/ui/components/tabs"
 	"cronicle/ui/constants"
@@ -15,17 +16,19 @@ import (
 
 type Model struct {
 	currSection int
-	tabs        tabs.Model
 	keys        utils.KeyMap
-	help        help.Model
 	ctx         context.Context
+	daily       daily.Model
+	tabs        tabs.Model
+	help        help.Model
 }
 
 func New() Model {
 	return Model{
 		currSection: 0,
-		tabs:        tabs.New(),
 		keys:        utils.Keys,
+		daily:       daily.New(),
+		tabs:        tabs.New(),
 		help:        help.New(),
 	}
 }
@@ -36,9 +39,10 @@ func (m Model) Init() tea.Cmd {
 
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var (
-		cmd     tea.Cmd
-		cmds    []tea.Cmd
-		helpCmd tea.Cmd
+		cmd      tea.Cmd
+		cmds     []tea.Cmd
+		helpCmd  tea.Cmd
+		dailyCmd tea.Cmd
 	)
 
 	switch msg := msg.(type) {
@@ -61,7 +65,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	}
 
 	m.help, helpCmd = m.help.Update(msg)
-	cmds = append(cmds, cmd, helpCmd)
+	m.daily, dailyCmd = m.daily.Update(msg)
+
+	cmds = append(cmds, cmd, helpCmd, dailyCmd)
 
 	return m, tea.Batch(cmds...)
 }
@@ -70,6 +76,10 @@ func (m Model) View() string {
 	s := strings.Builder{}
 
 	s.WriteString(m.tabs.View(m.ctx))
+
+	s.WriteString("\n")
+
+	s.WriteString(m.daily.View())
 
 	s.WriteString("\n")
 

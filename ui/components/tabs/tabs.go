@@ -24,6 +24,7 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 
 func (m Model) View(ctx context.Context) string {
 	var tabs []string
+
 	for i, section := range constants.Sections {
 		if m.CurrSection == i {
 			tabs = append(tabs, activeTabStyle.Render(section))
