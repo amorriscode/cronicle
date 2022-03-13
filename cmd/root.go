@@ -2,8 +2,11 @@ package cmd
 
 import (
 	cronicleLog "cronicle/cmd/log"
+	"cronicle/ui"
+	"log"
 	"os"
 
+	tea "github.com/charmbracelet/bubbletea"
 	"github.com/spf13/cobra"
 )
 
@@ -14,6 +17,7 @@ var rootCmd = &cobra.Command{
 track of your todo list, your daily work log, and your brag doc.
 
 Keep track of your developer journey in the command line.`,
+	Run: run,
 }
 
 func Execute() {
@@ -21,6 +25,15 @@ func Execute() {
 
 	err := rootCmd.Execute()
 	if err != nil {
+		os.Exit(1)
+	}
+}
+
+func run(cmd *cobra.Command, args []string) {
+	p := tea.NewProgram(ui.NewModel(), tea.WithAltScreen())
+
+	if err := p.Start(); err != nil {
+		log.Printf("Darn, something went wrong: %v", err)
 		os.Exit(1)
 	}
 }
