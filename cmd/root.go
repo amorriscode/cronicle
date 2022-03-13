@@ -21,9 +21,11 @@ Keep track of your developer journey in the command line.`,
 }
 
 func Execute() {
+	log.Println("inside execute")
 	rootCmd.AddCommand(cronicleLog.New())
 
 	err := rootCmd.Execute()
+	log.Println("inside execute", err)
 	if err != nil {
 		os.Exit(1)
 	}
