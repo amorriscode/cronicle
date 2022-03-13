@@ -1,7 +1,9 @@
 package cmd
 
 import (
-	cronicleLog "cronicle/cmd/log"
+	"cronicle/cmd/brag"
+	"cronicle/cmd/today"
+	"cronicle/cmd/todo"
 	"cronicle/config"
 	"cronicle/ui"
 	"log"
@@ -22,8 +24,6 @@ Keep track of your developer journey in the command line.`,
 }
 
 func Execute() {
-	rootCmd.AddCommand(cronicleLog.New())
-
 	err := rootCmd.Execute()
 	if err != nil {
 		os.Exit(1)
@@ -41,4 +41,7 @@ func run(cmd *cobra.Command, args []string) {
 
 func init() {
 	cobra.OnInitialize(config.InitConfig)
+	rootCmd.AddCommand(today.New())
+	rootCmd.AddCommand(brag.New())
+	rootCmd.AddCommand(todo.New())
 }
