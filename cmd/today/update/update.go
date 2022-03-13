@@ -1,4 +1,4 @@
-package create
+package update
 
 import (
 	"log"
@@ -8,9 +8,9 @@ import (
 
 func New() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create",
-		Short: "Create a new log entry",
-		Long:  "Create a new log entry in your cronicle journal.",
+		Use:   "update",
+		Short: "Update a today entry",
+		Long:  "Update a today entry in your cronicle journal.",
 		Run:   run,
 	}
 
@@ -18,5 +18,5 @@ func New() *cobra.Command {
 }
 
 func run(cmd *cobra.Command, args []string) {
-	log.Println("Creating a new log entry...")
+	log.Println("Updating a today doc...")
 }
