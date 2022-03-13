@@ -30,7 +30,7 @@ func Execute() {
 }
 
 func run(cmd *cobra.Command, args []string) {
-	p := tea.NewProgram(ui.NewModel(), tea.WithAltScreen())
+	p := tea.NewProgram(ui.New(), tea.WithAltScreen())
 
 	if err := p.Start(); err != nil {
 		log.Printf("Darn, something went wrong: %v", err)
