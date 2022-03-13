@@ -1,3 +1,6 @@
 package context
 
-type Context struct{}
+type Context struct {
+	ScreenHeight int
+	ScreenWidth  int
+}

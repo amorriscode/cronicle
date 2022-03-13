@@ -7,14 +7,14 @@ var (
 	tabsContentHeight = 2
 	TabsHeight        = tabsBorderHeight + tabsContentHeight
 
-	tab = lipgloss.NewStyle().Faint(true).Padding(0, 2)
+	tabStyle = lipgloss.NewStyle().Faint(true).Padding(0, 2)
 
-	activeTab = tab.Copy().Faint(false).Bold(true)
+	activeTabStyle = tabStyle.Copy().Faint(false).Bold(true)
 
-	tabRow = lipgloss.NewStyle().
-		Height(tabsContentHeight).
-		PaddingTop(1).
-		PaddingBottom(0).
-		BorderBottom(true).
-		BorderStyle(lipgloss.ThickBorder())
+	tabRowStyle = lipgloss.NewStyle().
+			Height(tabsContentHeight).
+			PaddingTop(1).
+			PaddingBottom(0).
+			BorderBottom(true).
+			BorderStyle(lipgloss.ThickBorder())
 )
