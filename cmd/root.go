@@ -2,6 +2,7 @@ package cmd
 
 import (
 	cronicleLog "cronicle/cmd/log"
+	"cronicle/config"
 	"cronicle/ui"
 	"log"
 	"os"
@@ -36,4 +37,8 @@ func run(cmd *cobra.Command, args []string) {
 		log.Printf("Darn, something went wrong: %v", err)
 		os.Exit(1)
 	}
+}
+
+func init() {
+	cobra.OnInitialize(config.InitConfig)
 }
