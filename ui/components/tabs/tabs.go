@@ -25,7 +25,7 @@ func (m Model) View() string {
 	var tabs []string
 	for i, section := range constants.Sections {
 		if m.CurrSection == i {
-			tabs = append(tabs, active.Render(section))
+			tabs = append(tabs, activeTab.Render(section))
 		} else {
 			tabs = append(tabs, tab.Render(section))
 		}

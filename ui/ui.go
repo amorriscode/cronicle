@@ -73,6 +73,5 @@ func (m Model) getPrevSection() int {
 func (m Model) View() string {
 	s := strings.Builder{}
 	s.WriteString(m.tabs.View())
-
 	return s.String()
 }

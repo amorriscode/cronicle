@@ -9,7 +9,7 @@ var (
 
 	tab = lipgloss.NewStyle().Faint(true).Padding(0, 2)
 
-	active = tab.Copy().Faint(false).Bold(true)
+	activeTab = tab.Copy().Faint(false).Bold(true)
 
 	tabRow = lipgloss.NewStyle().
 		Height(tabsContentHeight).
