@@ -3,33 +3,65 @@ package config
 import (
 	"log"
 	"os"
+	"os/user"
+	"path/filepath"
 
 	"github.com/spf13/viper"
 )
 
 func InitConfig() {
 	v := viper.GetViper()
-	log.Println("inside config")
-	//set default user name to whoami
-	v.SetDefault("user_name", "$USER")
-	v.SetDefault("file_location", "$HOME/cronicle")
 
-	// name + type of config file
-	v.SetConfigName("cronicle")
-	v.SetConfigType("yaml")
-	// path to look for config file
-	v.AddConfigPath(".")
-	configDir := os.Getenv("XDG_CONFIG_HOME")
-	if configDir == "" {
-		configDir = "$HOME/.config"
-	}
-	v.AddConfigPath(configDir + "/cronicle/")
-	v.AddConfigPath("/etc/cronicle/")
-	log.Println(configDir, v.GetString("user_name"), v.GetString("file_location"))
-	// Find and read the config file and assigns err variable
-	err := v.ReadInConfig()
-
+	homeDir, err := os.UserHomeDir()
 	if err != nil {
-		log.Panic("Error reading config file %w \n")
+		log.Fatal("Failed to get user's home directory: %w", err)
+	}
+
+	configDir := homeDir + "/.config"
+
+	currUser, err := user.Current()
+	if err != nil {
+		log.Fatal("Failed to get current user: %w", err)
+	}
+
+	configRoot := configDir + "/cronicle"
+	configName := "config"
+	configType := "yml"
+	configPath := filepath.Join(configRoot, configName+"."+configType)
+
+	v.AddConfigPath(configRoot)
+	v.SetConfigName(configName)
+	v.SetConfigType(configType)
+
+	// Set config defaults
+	v.SetDefault("user", currUser.Username)
+	v.SetDefault("file_dir", homeDir+"/cronicle")
+
+	// Attempt to read existing config
+	if err = v.ReadInConfig(); err != nil {
+		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+			createConfig(configRoot, configPath)
+		} else {
+			log.Fatal("Error reading config file %w \n")
+		}
+	}
+}
+
+func createConfig(configRoot string, configPath string) {
+	v := viper.GetViper()
+
+	_, err := os.Stat(configPath)
+	if !os.IsExist(err) {
+		if err := os.MkdirAll(configRoot, os.ModePerm); err != nil {
+			log.Fatal("Failed to create cronicle config path: %w", err)
+		}
+
+		if _, err := os.Create(configPath); err != nil {
+			log.Fatal("Failed to create cronicle config: %w", err)
+		}
+	}
+
+	if err = v.WriteConfigAs(configPath); err != nil {
+		log.Fatal(err)
 	}
 }

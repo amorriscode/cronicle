@@ -2,6 +2,7 @@ package cmd
 
 import (
 	cronicleLog "cronicle/cmd/log"
+	"cronicle/config"
 	"cronicle/ui"
 	"log"
 	"os"
@@ -21,11 +22,9 @@ Keep track of your developer journey in the command line.`,
 }
 
 func Execute() {
-	log.Println("inside execute")
 	rootCmd.AddCommand(cronicleLog.New())
 
 	err := rootCmd.Execute()
-	log.Println("inside execute", err)
 	if err != nil {
 		os.Exit(1)
 	}
@@ -38,4 +37,8 @@ func run(cmd *cobra.Command, args []string) {
 		log.Printf("Darn, something went wrong: %v", err)
 		os.Exit(1)
 	}
+}
+
+func init() {
+	cobra.OnInitialize(config.InitConfig)
 }
