@@ -29,13 +29,19 @@ func InitConfig() {
 	configType := "yml"
 	configPath := filepath.Join(configRoot, configName+"."+configType)
 
+	storagePath := filepath.Join(homeDir, "cronicle")
+
 	v.AddConfigPath(configRoot)
 	v.SetConfigName(configName)
 	v.SetConfigType(configType)
 
 	// Set config defaults
 	v.SetDefault("user", currUser.Username)
+<<<<<<< HEAD
 	v.SetDefault("storage_dir", homeDir+"/cronicle")
+=======
+	v.SetDefault("file_dir", storagePath)
+>>>>>>> 16e2a69 (feat: add ability to create new todo)
 
 	// Attempt to read existing config
 	if err = v.ReadInConfig(); err != nil {
