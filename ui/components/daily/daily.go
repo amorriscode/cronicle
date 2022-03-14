@@ -5,7 +5,6 @@ import (
 	"cronicle/ui/constants"
 	"cronicle/ui/context"
 	"cronicle/utils"
-	"log"
 
 	tea "github.com/charmbracelet/bubbletea"
 )
@@ -16,8 +15,6 @@ type Model struct {
 }
 
 func New(ctx *context.Context) Model {
-
-	log.Println(ctx.ScreenWidth)
 	m := Model{
 		ctx: ctx,
 	}
