@@ -6,5 +6,5 @@ type Dimensions struct {
 }
 
 var (
-	Sections = []string{"Todo", "Log", "Brag"}
+	Sections = []string{"Daily", "Brag"}
 )

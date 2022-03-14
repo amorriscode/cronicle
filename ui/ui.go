@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"cronicle/ui/components/brag"
 	"cronicle/ui/components/daily"
 	"cronicle/ui/components/help"
 	"cronicle/ui/components/tabs"
@@ -19,18 +20,24 @@ type Model struct {
 	keys        utils.KeyMap
 	ctx         context.Context
 	daily       daily.Model
+	brag        brag.Model
 	tabs        tabs.Model
 	help        help.Model
 }
 
 func New() Model {
-	return Model{
+	m := Model{
 		currSection: 0,
 		keys:        utils.Keys,
-		daily:       daily.New(),
 		tabs:        tabs.New(),
 		help:        help.New(),
 	}
+
+	// TODO: abstract sections out to be more dynamic
+	m.daily = daily.New(&m.ctx)
+	m.brag = brag.New(&m.ctx)
+
+	return m
 }
 
 func (m Model) Init() tea.Cmd {
@@ -43,6 +50,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		cmds     []tea.Cmd
 		helpCmd  tea.Cmd
 		dailyCmd tea.Cmd
+		bragCmd  tea.Cmd
 	)
 
 	switch msg := msg.(type) {
@@ -64,10 +72,13 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.onWindowSizeChanged(msg)
 	}
 
+	m.syncContext()
+
 	m.help, helpCmd = m.help.Update(msg)
 	m.daily, dailyCmd = m.daily.Update(msg)
+	m.brag, bragCmd = m.brag.Update(msg)
 
-	cmds = append(cmds, cmd, helpCmd, dailyCmd)
+	cmds = append(cmds, cmd, helpCmd, dailyCmd, bragCmd)
 
 	return m, tea.Batch(cmds...)
 }
@@ -79,7 +90,7 @@ func (m Model) View() string {
 
 	s.WriteString("\n")
 
-	s.WriteString(m.daily.View())
+	s.WriteString(m.getCurrSection().View())
 
 	s.WriteString("\n")
 
@@ -107,8 +118,29 @@ func (m Model) getPrevSection() int {
 	return m.currSection
 }
 
+type Section interface {
+	View() string
+}
+
+func (m *Model) getCurrSection() Section {
+	if m.currSection == 1 {
+		return m.brag
+	}
+
+	return m.daily
+}
+
 func (m *Model) onWindowSizeChanged(msg tea.WindowSizeMsg) {
 	m.help.SetWidth(msg.Width)
-	m.ctx.ScreenWidth = msg.Width
+
 	m.ctx.ScreenHeight = msg.Height
+	m.ctx.ScreenWidth = msg.Width
+
+	m.ctx.ContentHeight = msg.Height - tabs.TabsHeight - help.FooterHeight
+	m.ctx.ContentWidth = msg.Width
+}
+
+func (m *Model) syncContext() {
+	m.daily.UpdateContext(&m.ctx)
+	m.brag.UpdateContext(&m.ctx)
 }
