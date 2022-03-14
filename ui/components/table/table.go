@@ -136,3 +136,15 @@ func (m *Model) renderHeader() string {
 func (m *Model) renderBody() string {
 	return m.viewport.View()
 }
+
+func (m *Model) SetDimensions(d constants.Dimensions) {
+	old := m.dimensions
+	m.dimensions = d
+	m.viewport.Height = d.Height
+	m.viewport.Width = d.Width
+
+	// Re-render the table with new dimensions
+	if old.Height != d.Height || old.Width != d.Width {
+		m.SetRows(m.Rows)
+	}
+}

@@ -3,9 +3,11 @@ package tabs
 import "github.com/charmbracelet/lipgloss"
 
 var (
-	tabsBorderHeight  = 1
+	tabsBorderHeight = 1
+
 	tabsContentHeight = 2
-	TabsHeight        = tabsBorderHeight + tabsContentHeight
+
+	TabsHeight = tabsBorderHeight + tabsContentHeight
 
 	tabStyle = lipgloss.NewStyle().Faint(true).Padding(0, 2)
 
