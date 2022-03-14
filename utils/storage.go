@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"cronicle/ui/constants"
 	"log"
 	"os"
 
@@ -9,7 +10,7 @@ import (
 
 func GetStorageDir() string {
 	v := viper.GetViper()
-	d := v.GetString("file_dir")
+	d := v.GetString(constants.STORGAGE_DEFAULT)
 
 	if d == "" {
 		log.Fatal("Failed to find storage directory")

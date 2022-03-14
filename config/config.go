@@ -1,6 +1,7 @@
 package config
 
 import (
+	"cronicle/ui/constants"
 	"log"
 	"os"
 	"os/user"
@@ -17,14 +18,14 @@ func InitConfig() {
 		log.Fatal("Failed to get user's home directory: %w", err)
 	}
 
-	configDir := homeDir + "/.config"
+	configDir := filepath.Join(homeDir, ".config")
 
 	currUser, err := user.Current()
 	if err != nil {
 		log.Fatal("Failed to get current user: %w", err)
 	}
 
-	configRoot := configDir + "/cronicle"
+	configRoot := filepath.Join(configDir, "cronicle")
 	configName := "config"
 	configType := "yml"
 	configPath := filepath.Join(configRoot, configName+"."+configType)
@@ -36,12 +37,8 @@ func InitConfig() {
 	v.SetConfigType(configType)
 
 	// Set config defaults
-	v.SetDefault("user", currUser.Username)
-<<<<<<< HEAD
-	v.SetDefault("storage_dir", homeDir+"/cronicle")
-=======
-	v.SetDefault("file_dir", storagePath)
->>>>>>> 16e2a69 (feat: add ability to create new todo)
+	v.SetDefault(constants.USER_DEFAULT, currUser.Username)
+	v.SetDefault(constants.STORGAGE_DEFAULT, storagePath)
 
 	// Attempt to read existing config
 	if err = v.ReadInConfig(); err != nil {
