@@ -16,6 +16,7 @@ func New() *cobra.Command {
 		}
 
 	cmd.Flags().StringP("message", "m", "", "content of your todo")
+	cmd.Flags().StringP("date", "d", "", "due date YYYY-MM-DD")
 	cmd.MarkFlagRequired("message")
 
 	return cmd
@@ -23,5 +24,6 @@ func New() *cobra.Command {
 
 func run(cmd *cobra.Command, args []string) {
 	m, _ := cmd.Flags().GetString("message")
-	utils.WriteToFile(m)
+	d, _ := cmd.Flags().GetString("date")
+	utils.WriteToFile(m, d)
 }
