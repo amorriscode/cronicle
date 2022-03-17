@@ -25,5 +25,6 @@ func New() *cobra.Command {
 func run(cmd *cobra.Command, args []string) {
 	m, _ := cmd.Flags().GetString("message")
 	d, _ := cmd.Flags().GetString("date")
-	utils.WriteToFile(m, d)
+
+	utils.WriteToFile(m)
 }
