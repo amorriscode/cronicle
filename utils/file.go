@@ -6,27 +6,24 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
 )
 
 type WriteParams struct {
-	message, date, tags string
+	Message, Date, Tags string
 }
 
-func WriteToFile(m string) {
+func WriteToFile(m []string) {
 	// load storage directory from config
 	d := GetStorageDir()
 	fn := filepath.Join(d, uuid.NewString()+".txt")
-	if w.date == "" {
-		// due date set to end of month if not set
-		t := time.Date(time.Now().Year(), time.Now().Month(), 29, 0, 0, 0, 0, time.UTC)
-		w.date = t.Format("2006-01-02")
-	}
 
-	fullMessage := w.message + " " + w.date
-
+	fullMessage := strings.Join(m[:], "\n")
+	log.Println("message before writing to file", fullMessage)
+	log.Println("file path", fn)
 	f, err := os.OpenFile(fn, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Fatal(constants.ERROR_OPEN_FILE, err)
@@ -44,24 +41,41 @@ func WriteToFile(m string) {
 }
 
 func ComposeTodo(w WriteParams) []string {
-	output := make([]string, 3)
+	output := make([]string, 6)
+	// header
+	output = append(output, "---")
+
 	// date created
 	t := time.Now()
 	formatedTime := t.Format("2006-01-02 15:04")
-	date := fmt.Sprintf("date: %s \n", formatedTime)
+	date := fmt.Sprintf("date: %s", formatedTime)
+	output = append(output, date)
+
 	// date due
-	if w.date != "" {
-		dueDate := fmt.Sprintf("due: %s \n", w.date)
+	if w.Date != "" {
+		dueDate := fmt.Sprintf("due: %s", w.Date)
 		output = append(output, dueDate)
 	}
+
+	// type
+	output = append(output, "type: todo")
+
 	// tags
-	if w.tags != "" {
-		for i, c := range w.tags {
-			if c
+	if w.Tags != "" {
+		output = append(output, "tags: ")
+		tagArray := strings.Split(w.Tags, ",")
+		for index := 0; index < len(tagArray); index++ {
+			tag := fmt.Sprintf("- %s", tagArray[index])
+			output = append(output, tag)
 		}
 	}
 
-	output = append(output, date, "type: todo \n")
+	// footer
+	output = append(output, "---\n")
+
+	//todo item
+	message := fmt.Sprintf("- [ ] %s", w.Message)
+	output = append(output, message)
 
 	return output
 }
