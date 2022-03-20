@@ -4,6 +4,7 @@ import (
 	"cronicle/ui/components/brag"
 	"cronicle/ui/components/daily"
 	"cronicle/ui/components/help"
+	"cronicle/ui/components/section"
 	"cronicle/ui/components/tabs"
 	"cronicle/ui/constants"
 	"cronicle/ui/context"
@@ -19,8 +20,8 @@ type Model struct {
 	currSection int
 	keys        utils.KeyMap
 	ctx         context.Context
-	daily       daily.Model
-	brag        brag.Model
+	daily       section.Model
+	brag        section.Model
 	tabs        tabs.Model
 	help        help.Model
 }

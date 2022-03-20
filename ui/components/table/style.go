@@ -13,6 +13,7 @@ var (
 			MaxHeight(1)
 
 	selectedCellStyle = cellStyle.Copy().
+				Foreground(lipgloss.Color("#000000")).
 				Background(lipgloss.Color("#FFFFFF"))
 
 	titleCellStyle = cellStyle.Copy().

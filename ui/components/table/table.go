@@ -2,7 +2,9 @@ package table
 
 import (
 	"cronicle/ui/constants"
+	"cronicle/utils"
 
+	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -21,6 +23,7 @@ type Model struct {
 	Rows       []Row
 	dimensions constants.Dimensions
 	viewport   viewport.Model
+	currRow    int
 }
 
 func New(dimensions constants.Dimensions, columns []Column, rows []Row) Model {
@@ -29,6 +32,7 @@ func New(dimensions constants.Dimensions, columns []Column, rows []Row) Model {
 		Rows:       rows,
 		dimensions: dimensions,
 		viewport:   viewport.New(dimensions.Width, dimensions.Height),
+		currRow:    0,
 	}
 
 	m.SetRows(rows)
@@ -39,12 +43,30 @@ func New(dimensions constants.Dimensions, columns []Column, rows []Row) Model {
 func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 	var cmd tea.Cmd
 
+	if len(m.Rows) > 0 {
+		switch msg := msg.(type) {
+		case tea.KeyMsg:
+			switch {
+			case key.Matches(msg, utils.Keys.Down):
+				m.currRow = (m.currRow + 1) % len(m.Rows)
+			case key.Matches(msg, utils.Keys.Up):
+				newRow := m.currRow - 1
+				if newRow < 0 {
+					newRow = len(m.Rows) - 1
+				}
+				m.currRow = newRow
+			}
+		}
+	}
+
 	m.viewport, cmd = m.viewport.Update(msg)
 
 	return m, cmd
 }
 
-func (m Model) View() string {
+func (m *Model) View() string {
+	m.SetRows(m.Rows)
+
 	header := m.renderHeader()
 	body := m.renderBody()
 
@@ -98,6 +120,7 @@ func (m *Model) SetRows(rows []Row) {
 
 	headerColumns := m.renderHeaderColumns()
 	renderedRows := make([]string, 0, len(m.Rows))
+
 	for i := range m.Rows {
 		renderedRows = append(renderedRows, m.renderRow(i, headerColumns))
 	}
@@ -107,11 +130,12 @@ func (m *Model) SetRows(rows []Row) {
 
 func (m *Model) renderRow(row int, headerColumns []string) string {
 	var style lipgloss.Style
-	// if m.rowsViewport.GetCurrItem() == rowId {
-	// 	style = selectedCellStyle
-	// } else {
-	// 	style = cellStyle
-	// }
+
+	if m.currRow == row {
+		style = selectedCellStyle
+	} else {
+		style = cellStyle
+	}
 
 	renderedColumns := make([]string, len(m.Columns))
 	for i, column := range m.Rows[row] {

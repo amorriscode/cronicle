@@ -35,7 +35,7 @@ func InitConfig() {
 
 	// Set config defaults
 	v.SetDefault("user", currUser.Username)
-	v.SetDefault("file_dir", homeDir+"/cronicle")
+	v.SetDefault("storage_dir", homeDir+"/cronicle")
 
 	// Attempt to read existing config
 	if err = v.ReadInConfig(); err != nil {

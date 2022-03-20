@@ -1,4 +1,4 @@
-package daily
+package section
 
 var (
 	dateCellWidth = 15
