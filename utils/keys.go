@@ -9,6 +9,8 @@ type KeyMap struct {
 	Down        key.Binding
 	NextSection key.Binding
 	PrevSection key.Binding
+	ScrollUp    key.Binding
+	ScrollDown  key.Binding
 	Help        key.Binding
 	Quit        key.Binding
 }
@@ -42,6 +44,14 @@ var (
 		NextSection: key.NewBinding(
 			key.WithKeys("right", "l"),
 			key.WithHelp("→/l", "next section"),
+		),
+		ScrollUp: key.NewBinding(
+			key.WithKeys("ctrl+u"),
+			key.WithHelp("ctrl+u", "scroll document up"),
+		),
+		ScrollDown: key.NewBinding(
+			key.WithKeys("ctrl+d"),
+			key.WithHelp("Cctrl+d", "scroll document down"),
 		),
 		Help: key.NewBinding(
 			key.WithKeys("?"),

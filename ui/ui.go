@@ -138,7 +138,7 @@ func (m *Model) onWindowSizeChanged(msg tea.WindowSizeMsg) {
 	m.ctx.ScreenWidth = msg.Width
 
 	m.ctx.ContentHeight = msg.Height - tabs.TabsHeight - help.FooterHeight
-	m.ctx.ContentWidth = msg.Width
+	m.ctx.ContentWidth = msg.Width - section.SectionWidth
 }
 
 func (m *Model) syncContext() {
