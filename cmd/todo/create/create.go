@@ -29,5 +29,5 @@ func run(cmd *cobra.Command, args []string) {
 	t, _ := cmd.Flags().GetString("tags")
 	todo := utils.ComposeTodo(utils.WriteParams{m, d, t})
 
-	utils.WriteToFile(todo)
+	utils.WriteToFile(todo, "todo")
 }

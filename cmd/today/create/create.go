@@ -14,6 +14,11 @@ func New() *cobra.Command {
 		Run:   run,
 	}
 
+	cmd.Flags().StringP("message", "m", "", "content of your todo")
+	cmd.Flags().StringP("date", "d", "", "due date YYYY-MM-DD")
+	cmd.Flags().StringP("tags", "t", "", "comma separated tags of your todo")
+	cmd.MarkFlagRequired("message")
+
 	return cmd
 }
 

@@ -14,6 +14,9 @@ func New() *cobra.Command {
 		Run:   run,
 	}
 
+	cmd.Flags().StringP("number", "n", "", "number on ordered list to delete")
+	cmd.MarkFlagRequired("number")
+
 	return cmd
 }
 

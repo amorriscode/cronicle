@@ -3,6 +3,7 @@ package todo
 import (
 	"cronicle/cmd/todo/create"
 	"cronicle/cmd/todo/delete"
+	"cronicle/cmd/todo/list"
 	"cronicle/cmd/todo/update"
 
 	"github.com/spf13/cobra"
@@ -17,6 +18,7 @@ func New() *cobra.Command {
 	cmd.AddCommand(create.New())
 	cmd.AddCommand(update.New())
 	cmd.AddCommand(delete.New())
+	cmd.AddCommand(list.New())
 
 	return cmd
 }

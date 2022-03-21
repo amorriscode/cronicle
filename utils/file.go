@@ -3,6 +3,7 @@ package utils
 import (
 	"cronicle/ui/constants"
 	"fmt"
+	"io/fs"
 	"log"
 	"os"
 	"path/filepath"
@@ -16,10 +17,11 @@ type WriteParams struct {
 	Message, Date, Tags string
 }
 
-func WriteToFile(m []string) {
+func WriteToFile(m []string, t string) {
 	// load storage directory from config
 	d := GetStorageDir()
-	fn := filepath.Join(d, uuid.NewString()+".txt")
+	CreateDirIfNotExist(filepath.Join(d, t))
+	fn := GetPath([]string{t, uuid.NewString() + ".txt"})
 
 	fullMessage := strings.Join(m[:], "\n")
 	log.Println("message before writing to file", fullMessage)
@@ -78,4 +80,12 @@ func ComposeTodo(w WriteParams) []string {
 	output = append(output, message)
 
 	return output
+}
+
+func GetTodoFromFile(f fs.FileInfo) string {
+	path := GetPath([]string{"todo", f.Name()})
+	dat, _ := os.ReadFile(path)
+	fileArr := strings.Split(string(dat), "\n")
+	item := fileArr[len(fileArr)-1]
+	return item[6:]
 }

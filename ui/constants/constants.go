@@ -18,4 +18,5 @@ const (
 	ERROR_OPEN_FILE  = "Darn, error opening/creating file: %w"
 	ERROR_WRITE_FILE = "Darn, error writing to file: %w"
 	ERROR_CLOSE_FILE = "Darn, error closing file: %w"
+	ERROR_LIST_FILE  = "Darn, error listing files: %w"
 )
