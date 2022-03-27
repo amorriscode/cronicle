@@ -3,6 +3,7 @@ module cronicle
 go 1.16
 
 require (
+	github.com/adrg/frontmatter v0.2.0 // indirect
 	github.com/alecthomas/assert v0.0.0-20170929043011-405dbfeb8e38 // indirect
 	github.com/alecthomas/colour v0.0.0-20160524082231-60882d9e2721 // indirect
 	github.com/alecthomas/kong v0.2.4 // indirect
