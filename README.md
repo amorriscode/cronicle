@@ -26,8 +26,7 @@ All plain text data in `cronicle` is stored as a combination of Markdown and YAM
 date: 2022-03-01 05:03:30
 due: 2022-04-01 05:03:30
 type: todo
-tags:
-- bug
+tags: [bug]
 ---
 
 Debug infinite loop on /status page
@@ -43,8 +42,7 @@ When a todo item is completed, it will automatically get added to a To Do sectio
 ---
 date: 2022-03-01 05:03:30
 type: log
-tags:
-- pr
+tags: [pr]
 ---
 
 ## To Do
@@ -62,8 +60,7 @@ tags:
 ---
 date: 2022-03-01 05:03:30
 type: brag
-tags:
-- talk
+tags: [talk]
 ---
 
 Gave talk to entire company on performance improvements.

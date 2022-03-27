@@ -4,7 +4,9 @@ import (
 	"cronicle/ui/constants"
 	"cronicle/ui/context"
 	"cronicle/utils"
+	"strings"
 
+	"github.com/adrg/frontmatter"
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
@@ -52,7 +54,8 @@ func (m Model) View() string {
 
 func (m *Model) getDimensions() constants.Dimensions {
 	return constants.Dimensions{
-		Height: m.ctx.ContentHeight,
+		// TODO: make remove this magic number
+		Height: m.ctx.ContentHeight - 6,
 		Width:  m.ctx.ContentWidth,
 	}
 }
@@ -65,6 +68,18 @@ func (m *Model) UpdateContext(ctx *context.Context) {
 }
 
 func (m *Model) UpdateContent(content string) {
-	m.content = content
+	// Empty struct used to strip frontmatter
+	var f struct{}
+	var c string
+
+	// Parse frontmatter and remove it
+	rest, err := frontmatter.Parse(strings.NewReader(content), &f)
+	if err != nil {
+		c = content
+	} else {
+		c = string(rest)
+	}
+
+	m.content = c
 	m.viewport.SetContent(m.content)
 }
