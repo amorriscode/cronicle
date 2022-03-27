@@ -37,8 +37,8 @@ func InitConfig() {
 	v.SetConfigType(configType)
 
 	// Set config defaults
-	v.SetDefault(constants.USER_DEFAULT, currUser.Username)
-	v.SetDefault(constants.STORGAGE_DEFAULT, storagePath)
+	v.SetDefault(constants.CONFIG_USER, currUser.Username)
+	v.SetDefault(constants.CONFIG_STORAGE_DIR, storagePath)
 
 	// Attempt to read existing config
 	if err = v.ReadInConfig(); err != nil {

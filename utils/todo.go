@@ -12,11 +12,10 @@ import (
 	"time"
 )
 
-func GetTodoFromFile(f fs.FileInfo) []string {
+func GetTodoFromFile(f fs.FileInfo) string {
 	path := GetPath([]string{"todo", f.Name()})
 	dat, _ := os.ReadFile(path)
-	fileArr := strings.Split(string(dat), "\n")
-	return fileArr
+	return string(dat)
 }
 
 func GetAllTodos() []fs.FileInfo {
@@ -25,46 +24,47 @@ func GetAllTodos() []fs.FileInfo {
 	return files
 }
 
-func ComposeTodo(w WriteParams) []string {
-	output := make([]string, 0)
+func ComposeTodo(w WriteParams) string {
+	output := strings.Builder{}
 	// header
-	output = append(output, "---")
+	output.WriteString("---\n")
 
 	// date created
 	t := time.Now()
 	formatedTime := t.Format("2006-01-02 15:04")
-	date := fmt.Sprintf("date: %s", formatedTime)
-	output = append(output, date)
+	date := fmt.Sprintf("date: %s\n", formatedTime)
+	output.WriteString(date)
 
 	// date due
 	if w.Date != "" {
-		dueDate := fmt.Sprintf("due: %s", w.Date)
-		output = append(output, dueDate)
+		dueDate := fmt.Sprintf("due: %s\n", w.Date)
+		output.WriteString(dueDate)
 	}
 
 	// type
-	output = append(output, "type: todo")
+	output.WriteString("type: todo\n")
 
 	// tags
 	if w.Tags != "" {
-		tags := fmt.Sprintf("tags:[%s]", w.Tags)
-		output = append(output, tags)
+		tags := fmt.Sprintf("tags: [%s]\n", w.Tags)
+		output.WriteString(tags)
 	}
 
 	// footer
-	output = append(output, "---\n")
+	output.WriteString("---\n")
 
 	//todo item
-	message := fmt.Sprintf("- [ ] %s", w.Message)
-	output = append(output, message)
-
-	return output
+	message := fmt.Sprintf("- [ ] %s\n", w.Message)
+	output.WriteString(message)
+	return output.String()
 }
 
 func MarkCompleted(f fs.FileInfo) {
 	//add todo list  to log
+	time := time.Now()
+	date := time.Format("2006-01-02")
 	todoArr := GetTodoFromFile(f)
-	WriteToFile(todoArr, "log")
+	WriteToFile(todoArr, GetPath([]string{"log", date + ".md"}))
 	DeleteTodo(f.Name())
 }
 

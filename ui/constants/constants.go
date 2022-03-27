@@ -10,8 +10,8 @@ var (
 )
 
 const (
-	STORGAGE_DEFAULT = "storage_dir"
-	USER_DEFAULT     = "user"
+	CONFIG_STORAGE_DIR = "storage_dir"
+	CONFIG_USER        = "user"
 )
 
 const (

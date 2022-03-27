@@ -2,6 +2,7 @@ package delete
 
 import (
 	"cronicle/utils"
+	"fmt"
 
 	"github.com/spf13/cobra"
 )
@@ -26,9 +27,9 @@ func run(cmd *cobra.Command, args []string) {
 	files := utils.GetAllTodos()
 
 	if n == 0 || n > len(files) {
+		fmt.Printf("Number is not valid")
 		return
 	}
 
 	utils.DeleteTodo(files[n-1].Name())
-
 }

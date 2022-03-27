@@ -30,8 +30,8 @@ func run(cmd *cobra.Command, args []string) {
 	}
 
 	for i, f := range files {
-		todoArr := utils.GetTodoFromFile(f)
-		message := todoArr[len(todoArr)-1][6:]
-		fmt.Printf("%v. %s\n", i+1, message)
+		todo := utils.GetTodoFromFile(f)
+		message := utils.ParseContent(todo)
+		fmt.Printf("%v. %s\n", i+1, message[6:])
 	}
 }

@@ -10,7 +10,7 @@ import (
 
 func GetStorageDir() string {
 	v := viper.GetViper()
-	d := v.GetString(constants.STORGAGE_DEFAULT)
+	d := v.GetString(constants.CONFIG_STORAGE_DIR)
 
 	if d == "" {
 		log.Fatal("Failed to find storage directory")
