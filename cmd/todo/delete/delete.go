@@ -1,7 +1,8 @@
 package delete
 
 import (
-	"log"
+	"cronicle/utils"
+	"fmt"
 
 	"github.com/spf13/cobra"
 )
@@ -14,9 +15,21 @@ func New() *cobra.Command {
 		Run:   run,
 	}
 
+	cmd.Flags().IntP("number", "n", 0, "number on ordered list to delete")
+	cmd.MarkFlagRequired("number")
+
 	return cmd
 }
 
 func run(cmd *cobra.Command, args []string) {
-	log.Println("Deleting a todo doc...")
+	n, _ := cmd.Flags().GetInt("number")
+
+	files := utils.GetAllTodos()
+
+	if n == 0 || n > len(files) {
+		fmt.Printf("Number is not valid")
+		return
+	}
+
+	utils.DeleteTodo(files[n-1].Name())
 }

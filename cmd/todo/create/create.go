@@ -1,8 +1,9 @@
 package create
 
 import (
-	"log"
+	"cronicle/utils"
 
+	"github.com/google/uuid"
 	"github.com/spf13/cobra"
 )
 
@@ -15,9 +16,19 @@ func New() *cobra.Command {
 			Run:   run,
 		}
 
+	cmd.Flags().StringP("message", "m", "", "content of your todo")
+	cmd.Flags().StringP("date", "d", "", "due date YYYY-MM-DD")
+	cmd.Flags().StringP("tags", "t", "", "comma separated tags of your todo")
+	cmd.MarkFlagRequired("message")
+
 	return cmd
 }
 
 func run(cmd *cobra.Command, args []string) {
-	log.Println("Creating a new todo...")
+	m, _ := cmd.Flags().GetString("message")
+	d, _ := cmd.Flags().GetString("date")
+	t, _ := cmd.Flags().GetString("tags")
+	todo := utils.ComposeTodo(utils.WriteParams{m, d, t})
+
+	utils.WriteToFile(todo, utils.GetPath([]string{"todo", uuid.NewString() + ".md"}))
 }

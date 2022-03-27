@@ -18,3 +18,12 @@ func CreateDirIfNotExist(d string) {
 func FileNameWithoutExtension(f string) string {
 	return f[:len(f)-len(filepath.Ext(f))]
 }
+
+func GetPath(s []string) string {
+	d := GetStorageDir()
+	path := d
+	for index := 0; index < len(s); index++ {
+		path = filepath.Join(path, s[index])
+	}
+	return path
+}

@@ -8,3 +8,16 @@ type Dimensions struct {
 var (
 	Sections = []string{"Daily", "Brag"}
 )
+
+const (
+	CONFIG_STORAGE_DIR = "storage_dir"
+	CONFIG_USER        = "user"
+)
+
+const (
+	ERROR_OPEN_FILE   = "Darn, error opening/creating file: %w"
+	ERROR_WRITE_FILE  = "Darn, error writing to file: %w"
+	ERROR_CLOSE_FILE  = "Darn, error closing file: %w"
+	ERROR_LIST_FILE   = "Darn, error listing files: %w"
+	ERROR_DELETE_FILE = "Darn, error deleting file: %w"
+)

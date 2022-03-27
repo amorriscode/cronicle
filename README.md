@@ -29,7 +29,7 @@ type: todo
 tags: [bug]
 ---
 
-Debug infinite loop on /status page
+- [ ] Debug infinite loop on /status page
 ```
 
 ### Daily Log
@@ -62,6 +62,5 @@ date: 2022-03-01 05:03:30
 type: brag
 tags: [talk]
 ---
-
 Gave talk to entire company on performance improvements.
 ```

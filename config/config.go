@@ -1,6 +1,7 @@
 package config
 
 import (
+	"cronicle/ui/constants"
 	"log"
 	"os"
 	"os/user"
@@ -17,25 +18,27 @@ func InitConfig() {
 		log.Fatal("Failed to get user's home directory: %w", err)
 	}
 
-	configDir := homeDir + "/.config"
+	configDir := filepath.Join(homeDir, ".config")
 
 	currUser, err := user.Current()
 	if err != nil {
 		log.Fatal("Failed to get current user: %w", err)
 	}
 
-	configRoot := configDir + "/cronicle"
+	configRoot := filepath.Join(configDir, "cronicle")
 	configName := "config"
 	configType := "yml"
 	configPath := filepath.Join(configRoot, configName+"."+configType)
+
+	storagePath := filepath.Join(homeDir, "cronicle")
 
 	v.AddConfigPath(configRoot)
 	v.SetConfigName(configName)
 	v.SetConfigType(configType)
 
 	// Set config defaults
-	v.SetDefault("user", currUser.Username)
-	v.SetDefault("storage_dir", homeDir+"/cronicle")
+	v.SetDefault(constants.CONFIG_USER, currUser.Username)
+	v.SetDefault(constants.CONFIG_STORAGE_DIR, storagePath)
 
 	// Attempt to read existing config
 	if err = v.ReadInConfig(); err != nil {

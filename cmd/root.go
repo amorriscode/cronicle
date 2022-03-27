@@ -41,6 +41,7 @@ func run(cmd *cobra.Command, args []string) {
 
 func init() {
 	cobra.OnInitialize(config.InitConfig)
+
 	rootCmd.AddCommand(today.New())
 	rootCmd.AddCommand(brag.New())
 	rootCmd.AddCommand(todo.New())
