@@ -47,7 +47,11 @@ func New(ctx *context.Context, name string) Model {
 }
 
 func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
-	var cmd tea.Cmd
+	var (
+		cmds        []tea.Cmd
+		documentCmd tea.Cmd
+		tableCmd    tea.Cmd
+	)
 
 	if len(m.files) > 0 {
 		switch msg := msg.(type) {
@@ -66,11 +70,14 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 
 		m.documentContent = m.getFile(m.storageDir + "/" + m.files[m.currFile].Name())
 		m.document.UpdateContent(m.documentContent)
+		m.document, documentCmd = m.document.Update(msg)
 	}
 
-	m.table, cmd = m.table.Update(msg)
+	m.table, tableCmd = m.table.Update(msg)
 
-	return m, cmd
+	cmds = append(cmds, documentCmd, tableCmd)
+
+	return m, tea.Batch(cmds...)
 }
 
 func (m Model) View() string {
