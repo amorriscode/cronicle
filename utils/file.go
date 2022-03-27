@@ -2,8 +2,6 @@ package utils
 
 import (
 	"cronicle/ui/constants"
-	"fmt"
-	"io/fs"
 	"log"
 	"os"
 	"path/filepath"
@@ -17,11 +15,24 @@ type WriteParams struct {
 	Message, Date, Tags string
 }
 
+type UpdateParams struct {
+	Message, Date, Tags string
+	Number              int
+}
+
 func WriteToFile(m []string, t string) {
 	// load storage directory from config
 	d := GetStorageDir()
 	CreateDirIfNotExist(filepath.Join(d, t))
-	fn := GetPath([]string{t, uuid.NewString() + ".txt"})
+	fn := ""
+
+	if t == "todo" {
+		fn = GetPath([]string{t, uuid.NewString() + ".md"})
+	} else {
+		time := time.Now()
+		date := time.Format("2006-01-02")
+		fn = GetPath([]string{t, date + ".md"})
+	}
 
 	fullMessage := strings.Join(m[:], "\n")
 	log.Println("message before writing to file", fullMessage)
@@ -40,52 +51,4 @@ func WriteToFile(m []string, t string) {
 		log.Fatal(constants.ERROR_CLOSE_FILE, err)
 	}
 
-}
-
-func ComposeTodo(w WriteParams) []string {
-	output := make([]string, 6)
-	// header
-	output = append(output, "---")
-
-	// date created
-	t := time.Now()
-	formatedTime := t.Format("2006-01-02 15:04")
-	date := fmt.Sprintf("date: %s", formatedTime)
-	output = append(output, date)
-
-	// date due
-	if w.Date != "" {
-		dueDate := fmt.Sprintf("due: %s", w.Date)
-		output = append(output, dueDate)
-	}
-
-	// type
-	output = append(output, "type: todo")
-
-	// tags
-	if w.Tags != "" {
-		output = append(output, "tags: ")
-		tagArray := strings.Split(w.Tags, ",")
-		for index := 0; index < len(tagArray); index++ {
-			tag := fmt.Sprintf("- %s", tagArray[index])
-			output = append(output, tag)
-		}
-	}
-
-	// footer
-	output = append(output, "---\n")
-
-	//todo item
-	message := fmt.Sprintf("- [ ] %s", w.Message)
-	output = append(output, message)
-
-	return output
-}
-
-func GetTodoFromFile(f fs.FileInfo) string {
-	path := GetPath([]string{"todo", f.Name()})
-	dat, _ := os.ReadFile(path)
-	fileArr := strings.Split(string(dat), "\n")
-	item := fileArr[len(fileArr)-1]
-	return item[6:]
 }

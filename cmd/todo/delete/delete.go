@@ -1,12 +1,7 @@
 package delete
 
 import (
-	"cronicle/ui/constants"
 	"cronicle/utils"
-	"io/ioutil"
-	"log"
-	"os"
-	"path/filepath"
 
 	"github.com/spf13/cobra"
 )
@@ -27,15 +22,13 @@ func New() *cobra.Command {
 
 func run(cmd *cobra.Command, args []string) {
 	n, _ := cmd.Flags().GetInt("number")
-	if n == 0 {
+
+	files := utils.GetAllTodos()
+
+	if n == 0 || n > len(files) {
 		return
 	}
-	dirPath := utils.GetPath([]string{"todo"})
-	files, _ := ioutil.ReadDir(dirPath)
-	e := os.Remove(filepath.Join(dirPath, files[n-1].Name()))
 
-	if e != nil {
-		log.Fatal(constants.ERROR_DELETE_FILE, e)
-	}
+	utils.DeleteTodo(files[n-1].Name())
 
 }

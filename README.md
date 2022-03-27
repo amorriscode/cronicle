@@ -26,8 +26,7 @@ All plain text data in `cronicle` is stored as a combination of Markdown and YAM
 date: 2022-03-01 05:03:30
 due: 2022-04-01 05:03:30
 type: todo
-tags:
-- bug
+tags: [bug]
 ---
 
 - [ ] Debug infinite loop on /status page
