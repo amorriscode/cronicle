@@ -1,10 +1,10 @@
 package todo
 
 import (
+	"cronicle/cmd/todo/complete"
 	"cronicle/cmd/todo/create"
 	"cronicle/cmd/todo/delete"
 	"cronicle/cmd/todo/list"
-	"cronicle/cmd/todo/update"
 	"cronicle/utils"
 	"path/filepath"
 
@@ -22,7 +22,7 @@ func New() *cobra.Command {
 	cobra.OnInitialize(CreateStorageDir)
 
 	cmd.AddCommand(create.New())
-	cmd.AddCommand(update.New())
+	cmd.AddCommand(complete.New())
 	cmd.AddCommand(delete.New())
 	cmd.AddCommand(list.New())
 

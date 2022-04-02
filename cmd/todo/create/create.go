@@ -28,7 +28,8 @@ func run(cmd *cobra.Command, args []string) {
 	m, _ := cmd.Flags().GetString("message")
 	d, _ := cmd.Flags().GetString("date")
 	t, _ := cmd.Flags().GetString("tags")
-	todo := utils.ComposeTodo(utils.WriteParams{m, d, t})
+	todo := utils.ComposeTodo(utils.WriteParams{Message: m, Date: d, Tags: t})
 
 	utils.WriteToFile(todo, utils.GetPath([]string{"todo", uuid.NewString() + ".md"}))
+	utils.ListTodo()
 }

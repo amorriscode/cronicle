@@ -2,6 +2,8 @@ package utils
 
 import (
 	"cronicle/ui/constants"
+	"io/fs"
+	"io/ioutil"
 	"log"
 	"os"
 	"strings"
@@ -18,8 +20,20 @@ type UpdateParams struct {
 	Number              int
 }
 
+func GetDataFromFile(path string) string {
+	dat, _ := os.ReadFile(path)
+	return string(dat)
+}
+
+func GetAllFiles(dataType string) []fs.FileInfo {
+	dirPath := GetPath([]string{dataType})
+	files, _ := ioutil.ReadDir(dirPath)
+	return files
+}
+
 func WriteToFile(m string, fn string) {
-	f, err := os.OpenFile(fn, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	// create or replace
+	f, err := os.OpenFile(fn, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
 	if err != nil {
 		log.Fatal(constants.ERROR_OPEN_FILE, err)
 	}
@@ -49,4 +63,27 @@ func ParseContent(content string) string {
 	}
 
 	return c
+}
+
+type Header struct {
+	Date string   `yaml:"date"`
+	Due  string   `yaml:"due"`
+	Type string   `yaml:"type"`
+	Tags []string `yaml:"tags"`
+}
+
+func ParseHeader(content string) Header {
+	var matter struct {
+		Date string   `yaml:"date"`
+		Due  string   `yaml:"due"`
+		Type string   `yaml:"type"`
+		Tags []string `yaml:"tags"`
+	}
+
+	_, err := frontmatter.Parse(strings.NewReader(content), &matter)
+	if err != nil {
+		log.Println(err)
+	}
+
+	return matter
 }
