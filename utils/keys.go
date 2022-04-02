@@ -13,6 +13,7 @@ type KeyMap struct {
 	ScrollDown  key.Binding
 	Help        key.Binding
 	Quit        key.Binding
+	Todo        key.Binding
 }
 
 func (k KeyMap) ShortHelp() []key.Binding {
@@ -24,7 +25,8 @@ func (k KeyMap) FullHelp() [][]key.Binding {
 		{k.Up, k.Down},
 		{k.ScrollUp, k.ScrollDown},
 		{k.PrevSection, k.NextSection},
-		{k.Help, k.Quit},
+		{k.Todo},
+		{k.Quit},
 	}
 }
 
@@ -52,15 +54,15 @@ var (
 		),
 		ScrollDown: key.NewBinding(
 			key.WithKeys("ctrl+j"),
-			key.WithHelp("Cctrl+j", "scroll document down"),
-		),
-		Help: key.NewBinding(
-			key.WithKeys("?"),
-			key.WithHelp("?", "toggle help"),
+			key.WithHelp("ctrl+j", "scroll document down"),
 		),
 		Quit: key.NewBinding(
-			key.WithKeys("q", "esc", "ctrl+c"),
+			key.WithKeys("q", "ctrl+c"),
 			key.WithHelp("q", "quit"),
+		),
+		Todo: key.NewBinding(
+			key.WithKeys("t"),
+			key.WithHelp("t", "todo"),
 		),
 	}
 )
