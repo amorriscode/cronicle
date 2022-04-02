@@ -5,8 +5,6 @@ import (
 	"cronicle/utils"
 
 	bubblesHelp "github.com/charmbracelet/bubbles/help"
-	"github.com/charmbracelet/bubbles/key"
-	tea "github.com/charmbracelet/bubbletea"
 )
 
 type Model struct {
@@ -16,21 +14,11 @@ type Model struct {
 func New() Model {
 	help := bubblesHelp.New()
 
+	help.ShowAll = true
+
 	return Model{
 		help: help,
 	}
-}
-
-func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
-	switch msg := msg.(type) {
-	case tea.KeyMsg:
-		switch {
-		case key.Matches(msg, utils.Keys.Help):
-			m.help.ShowAll = !m.help.ShowAll
-		}
-	}
-
-	return m, nil
 }
 
 func (m Model) View(ctx context.Context) string {
