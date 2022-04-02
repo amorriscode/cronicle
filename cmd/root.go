@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"cronicle/cmd/brag"
-	"cronicle/cmd/today"
+	"cronicle/cmd/daily"
 	"cronicle/cmd/todo"
 	"cronicle/config"
 	"cronicle/ui"
@@ -42,7 +42,7 @@ func run(cmd *cobra.Command, args []string) {
 func init() {
 	cobra.OnInitialize(config.InitConfig)
 
-	rootCmd.AddCommand(today.New())
+	rootCmd.AddCommand(daily.New())
 	rootCmd.AddCommand(brag.New())
 	rootCmd.AddCommand(todo.New())
 }
