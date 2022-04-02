@@ -6,6 +6,7 @@ import (
 	"cronicle/ui/components/help"
 	"cronicle/ui/components/section"
 	"cronicle/ui/components/tabs"
+	"cronicle/ui/components/todo"
 	"cronicle/ui/constants"
 	"cronicle/ui/context"
 	"cronicle/utils"
@@ -20,6 +21,7 @@ type Model struct {
 	currSection int
 	keys        utils.KeyMap
 	ctx         context.Context
+	todo        todo.Model
 	daily       section.Model
 	brag        section.Model
 	tabs        tabs.Model
@@ -35,6 +37,7 @@ func New() Model {
 	}
 
 	// TODO: abstract sections out to be more dynamic
+	m.todo = todo.New(&m.ctx)
 	m.daily = daily.New(&m.ctx)
 	m.brag = brag.New(&m.ctx)
 
@@ -52,6 +55,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		helpCmd  tea.Cmd
 		dailyCmd tea.Cmd
 		bragCmd  tea.Cmd
+		todoCmd  tea.Cmd
 	)
 
 	switch msg := msg.(type) {
@@ -76,10 +80,23 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	m.syncContext()
 
 	m.help, helpCmd = m.help.Update(msg)
-	m.daily, dailyCmd = m.daily.Update(msg)
-	m.brag, bragCmd = m.brag.Update(msg)
 
-	cmds = append(cmds, cmd, helpCmd, dailyCmd, bragCmd)
+	if m.currSection == 0 {
+		m.todo, todoCmd = m.todo.Update(msg)
+		cmds = append(cmds, todoCmd)
+	}
+
+	if m.currSection == 1 {
+		m.daily, dailyCmd = m.daily.Update(msg)
+		cmds = append(cmds, dailyCmd)
+	}
+
+	if m.currSection == 2 {
+		m.brag, bragCmd = m.brag.Update(msg)
+		cmds = append(cmds, bragCmd)
+	}
+
+	cmds = append(cmds, cmd, helpCmd)
 
 	return m, tea.Batch(cmds...)
 }
@@ -125,10 +142,14 @@ type Section interface {
 
 func (m *Model) getCurrSection() Section {
 	if m.currSection == 1 {
+		return m.daily
+	}
+
+	if m.currSection == 2 {
 		return m.brag
 	}
 
-	return m.daily
+	return m.todo
 }
 
 func (m *Model) onWindowSizeChanged(msg tea.WindowSizeMsg) {
@@ -144,4 +165,5 @@ func (m *Model) onWindowSizeChanged(msg tea.WindowSizeMsg) {
 func (m *Model) syncContext() {
 	m.daily.UpdateContext(&m.ctx)
 	m.brag.UpdateContext(&m.ctx)
+	m.todo.UpdateContext(&m.ctx)
 }

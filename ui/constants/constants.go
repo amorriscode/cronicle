@@ -6,7 +6,7 @@ type Dimensions struct {
 }
 
 var (
-	Sections = []string{"Daily", "Brag"}
+	Sections = []string{"Todo", "Daily", "Brag"}
 )
 
 const (
