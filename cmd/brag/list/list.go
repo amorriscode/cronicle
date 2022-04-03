@@ -1,7 +1,7 @@
 package list
 
 import (
-	"cronicle/utils/todo"
+	"cronicle/utils"
 
 	"github.com/spf13/cobra"
 )
@@ -9,8 +9,8 @@ import (
 func New() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "list",
-		Short: "list todo entries",
-		Long:  "list uncompleted todo entries with id",
+		Short: "list brag files",
+		Long:  "list brag files",
 		Run:   run,
 	}
 
@@ -18,5 +18,5 @@ func New() *cobra.Command {
 }
 
 func run(cmd *cobra.Command, args []string) {
-	todo.ListTodos()
+	utils.ListFiles("brag")
 }

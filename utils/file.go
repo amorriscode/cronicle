@@ -18,11 +18,6 @@ type WriteParams struct {
 	Message, Date, Tags string
 }
 
-type UpdateParams struct {
-	Message, Date, Tags string
-	Number              int
-}
-
 func GetDataFromFile(path string) string {
 	d, _ := os.ReadFile(path)
 	return string(d)

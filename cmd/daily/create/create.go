@@ -2,6 +2,7 @@ package create
 
 import (
 	"cronicle/utils"
+	"cronicle/utils/entries"
 
 	"github.com/spf13/cobra"
 )
@@ -23,5 +24,5 @@ func New() *cobra.Command {
 func run(cmd *cobra.Command, args []string) {
 	m, _ := cmd.Flags().GetString("message")
 	t, _ := cmd.Flags().GetString("tags")
-	utils.WriteOrCreateDaily(utils.WriteDailyParams{Message: m, Tags: t})
+	entries.WriteOrCreateEntry(utils.WriteParams{Message: m, Tags: t}, "daily")
 }

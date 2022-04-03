@@ -2,6 +2,7 @@ package create
 
 import (
 	"cronicle/utils"
+	"cronicle/utils/todo"
 
 	"github.com/google/uuid"
 	"github.com/spf13/cobra"
@@ -28,8 +29,8 @@ func run(cmd *cobra.Command, args []string) {
 	m, _ := cmd.Flags().GetString("message")
 	d, _ := cmd.Flags().GetString("date")
 	t, _ := cmd.Flags().GetString("tags")
-	todo := utils.ComposeTodo(utils.WriteParams{Message: m, Date: d, Tags: t})
+	c := todo.ComposeTodo(utils.WriteParams{Message: m, Date: d, Tags: t})
 
-	utils.WriteToFile(todo, utils.GetPath([]string{"todo", uuid.NewString() + ".md"}))
-	utils.ListTodos()
+	utils.WriteToFile(c, utils.GetPath([]string{"todo", uuid.NewString() + ".md"}))
+	todo.ListTodos()
 }
