@@ -23,5 +23,5 @@ func New() *cobra.Command {
 func run(cmd *cobra.Command, args []string) {
 	m, _ := cmd.Flags().GetString("message")
 	t, _ := cmd.Flags().GetString("tags")
-	utils.WriteOrCreateDaily(utils.WriteDailyParams{Message: m, Tags: t})
+	utils.WriteOrCreateEntry(utils.WriteEntryParams{Message: m, Tags: t}, "daily")
 }

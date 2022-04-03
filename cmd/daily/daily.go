@@ -14,8 +14,8 @@ import (
 func New() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "daily",
-		Short: "Manage your daily entries",
-		Long:  "Manage the daily entries in your cronicle journal.",
+		Short: "manage your daily entries",
+		Long:  "manage the daily entries",
 	}
 	// Ensure todo storage dir exists on execute
 	cobra.OnInitialize(CreateStorageDir)

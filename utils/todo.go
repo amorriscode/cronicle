@@ -51,9 +51,8 @@ func MarkCompleted(f fs.FileInfo) {
 	todo := GetDataFromFile(path)
 	checkedTodo := CheckTodo(todo)
 	tags := ParseHeader(todo).Tags
-	// get today's log file, update log file: add to exisiting tags, append complted todo
-	// if file does not exist, call create log file and update log file
-	WriteOrCreateDaily(WriteDailyParams{Message: checkedTodo, Tags: strings.Join(tags, ",")})
+	//add completed todo to log
+	WriteOrCreateEntry(WriteEntryParams{Message: checkedTodo, Tags: strings.Join(tags, ",")}, "daily")
 	DeleteFile(f.Name(), "todo")
 }
 

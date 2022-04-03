@@ -1,7 +1,7 @@
 package create
 
 import (
-	"log"
+	"cronicle/utils"
 
 	"github.com/spf13/cobra"
 )
@@ -9,13 +9,19 @@ import (
 func New() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "create",
-		Short: "Create a new brag entry",
-		Long:  "Create a new brag entry in your cronicle journal.",
+		Short: "create a new brag entry",
+		Long:  "create a new brag entry",
 		Run:   run,
 	}
+
+	cmd.Flags().StringP("message", "m", "", "content of your brag entry")
+	cmd.Flags().StringP("tags", "t", "", "comma separated tags of your brag entry")
+
 	return cmd
 }
 
 func run(cmd *cobra.Command, args []string) {
-	log.Println("Creating a new brag entry...")
+	m, _ := cmd.Flags().GetString("message")
+	t, _ := cmd.Flags().GetString("tags")
+	utils.WriteOrCreateEntry(utils.WriteEntryParams{Message: m, Tags: t}, "brag")
 }

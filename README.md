@@ -41,7 +41,7 @@ When a todo item is completed, it will automatically get added to a To Do sectio
 ```yaml
 ---
 date: 2022-03-01 05:03:30
-type: log
+type: daily
 tags: [pr]
 ---
 
@@ -62,5 +62,5 @@ date: 2022-03-01 05:03:30
 type: brag
 tags: [talk]
 ---
-Gave talk to entire company on performance improvements.
+- Gave talk to entire company on performance improvements.
 ```

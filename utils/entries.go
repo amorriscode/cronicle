@@ -10,38 +10,38 @@ import (
 	"time"
 )
 
-type WriteDailyParams struct {
+type WriteEntryParams struct {
 	Message, Tags, Date string
 }
 
-func GetDate() string {
+func getDate() string {
 	time := time.Now()
 	return time.Format("2006-01-02")
 }
 
-func WriteOrCreateDaily(w WriteDailyParams) {
-	path := GetPath([]string{"daily", GetDate() + ".md"})
+func WriteOrCreateEntry(w WriteEntryParams, t string) {
+	path := GetPath([]string{t, getDate() + ".md"})
 	if _, err := os.Stat(path); err == nil {
-		// current daily file exists
-		appendEntry(w)
+		// current Entry file exists
+		appendEntry(w, t)
 	} else if errors.Is(err, os.ErrNotExist) {
-		// no daily file created yet
+		// no Entry file created yet
 		createdDateTime := time.Now().Format("2006-01-02 15:04")
 		m := fmt.Sprintf("- %s\n", w.Message)
-		newDaily := ComposeDaily(WriteDailyParams{Message: m, Tags: w.Tags, Date: createdDateTime})
-		WriteToFile(newDaily, GetPath([]string{"daily", GetDate() + ".md"}))
+		newEntry := composeEntry(WriteEntryParams{Message: m, Tags: w.Tags, Date: createdDateTime}, t)
+		WriteToFile(newEntry, GetPath([]string{t, getDate() + ".md"}))
 	} else {
 		log.Fatal(constants.ERROR_WRITE_FILE, err)
 	}
 
 }
 
-func appendEntry(w WriteDailyParams) {
+func appendEntry(w WriteEntryParams, t string) {
 	// merge tags
-	path := GetPath([]string{"daily", GetDate() + ".md"})
-	daily := GetDataFromFile(path)
-	tags := ParseHeader(daily).Tags
-	content := ParseContent(daily)
+	path := GetPath([]string{t, getDate() + ".md"})
+	entry := GetDataFromFile(path)
+	tags := ParseHeader(entry).Tags
+	content := ParseContent(entry)
 
 	// add tags only if they don't already exist
 	if w.Tags != "" {
@@ -52,19 +52,19 @@ func appendEntry(w WriteDailyParams) {
 		}
 	}
 
-	// join previous daily messages and new entry together
+	// join previous messages and new entry together
 	newContent := strings.Builder{}
 	newContent.WriteString(content)
 	m := fmt.Sprintf("\n- %s\n", w.Message)
 	newContent.WriteString(m)
 
-	// compose new daily with new content, joined tags and previous created at date
-	newDaily := ComposeDaily(WriteDailyParams{Message: newContent.String(), Tags: strings.Join(tags, ","), Date: ParseHeader(daily).Date})
+	// compose new entry with new content, joined tags and previous created at date
+	newEntry := composeEntry(WriteEntryParams{Message: newContent.String(), Tags: strings.Join(tags, ","), Date: ParseHeader(entry).Date}, t)
 
-	WriteToFile(newDaily, path)
+	WriteToFile(newEntry, path)
 }
 
-func ComposeDaily(w WriteDailyParams) string {
+func composeEntry(w WriteEntryParams, t string) string {
 	output := strings.Builder{}
 	// header
 	output.WriteString("---\n")
@@ -74,7 +74,8 @@ func ComposeDaily(w WriteDailyParams) string {
 	output.WriteString(date)
 
 	//type
-	output.WriteString("type: daily\n")
+	entryType := fmt.Sprintf("type: %s\n", t)
+	output.WriteString(entryType)
 
 	// tags
 	tags := fmt.Sprintf("tags: [%s]\n", w.Tags)
