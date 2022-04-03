@@ -5,6 +5,7 @@ import (
 	"cronicle/cmd/todo/create"
 	"cronicle/cmd/todo/delete"
 	"cronicle/cmd/todo/list"
+	"cronicle/cmd/todo/update"
 	"cronicle/utils"
 	"path/filepath"
 
@@ -25,6 +26,7 @@ func New() *cobra.Command {
 	cmd.AddCommand(complete.New())
 	cmd.AddCommand(delete.New())
 	cmd.AddCommand(list.New())
+	cmd.AddCommand(update.New())
 
 	return cmd
 }
