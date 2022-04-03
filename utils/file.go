@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"os/exec"
 	"strings"
 
 	"github.com/adrg/frontmatter"
@@ -45,6 +46,15 @@ func WriteToFile(m string, fn string) {
 
 	if err := f.Close(); err != nil {
 		log.Fatal(constants.ERROR_CLOSE_FILE, err)
+	}
+}
+
+func EditFile(path string) {
+	v := exec.Command("vim", path)
+	v.Stdin = os.Stdin
+	v.Stdout = os.Stdout
+	if err := v.Run(); err != nil {
+		log.Fatal(constants.ERROR_OPEN_FILE, err)
 	}
 }
 
