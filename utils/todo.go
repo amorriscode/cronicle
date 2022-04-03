@@ -58,9 +58,13 @@ func MarkCompleted(f fs.FileInfo) {
 }
 
 func CheckTodo(todo string) string {
-	var c strings.Builder
-
 	m := ParseContent(todo)
+
+	if strings.Contains(m, "[x]") {
+		return m[2:]
+	}
+
+	var c strings.Builder
 	c.WriteString(m[2:3])
 	c.WriteString("x")
 	c.WriteString(m[4:])
