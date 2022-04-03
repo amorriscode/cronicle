@@ -4,6 +4,7 @@ import (
 	"cronicle/ui/components/section"
 	"cronicle/ui/context"
 	"cronicle/utils"
+	"cronicle/utils/entries"
 )
 
 func NewSectionUI(ctx *context.Context) section.Model {
@@ -11,7 +12,7 @@ func NewSectionUI(ctx *context.Context) section.Model {
 }
 
 func Edit() {
-	utils.WriteOrCreateDaily(utils.WriteDailyParams{Message: "What did you work on?", Tags: ""})
+	entries.WriteOrCreateEntry(utils.WriteParams{Message: "What did you work on?", Tags: ""}, "daily")
 
 	files := utils.GetAllFiles("daily")
 	path := utils.GetPath([]string{"daily", files[len(files)-1].Name()})

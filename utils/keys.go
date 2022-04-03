@@ -28,7 +28,7 @@ func (k KeyMap) FullHelp() [][]key.Binding {
 		{k.Up, k.Down},
 		{k.ScrollUp, k.ScrollDown},
 		{k.PrevSection, k.NextSection},
-		{k.Todo, k.Daily, k.Brag},
+		// {k.Todo, k.Daily, k.Brag},
 		{k.Quit},
 	}
 }
