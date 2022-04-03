@@ -12,7 +12,7 @@ func New() *cobra.Command {
 		&cobra.Command{
 			Use:   "create",
 			Short: "create a new todo",
-			Long:  "create a new todo in your cronicle journal.",
+			Long:  "create a new todo",
 			Run:   run,
 		}
 

@@ -10,7 +10,7 @@ import (
 
 func New() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update [ID]",
+		Use:   "update [ID!]",
 		Short: "update a todo entry",
 		Long:  "update a todo entry",
 		Run:   run,

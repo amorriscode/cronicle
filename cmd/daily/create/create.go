@@ -10,7 +10,7 @@ func New() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "create",
 		Short: "create a new daily entry",
-		Long:  "create a new daily entry in your cronicle journal.",
+		Long:  "create a new daily entry",
 		Run:   run,
 	}
 

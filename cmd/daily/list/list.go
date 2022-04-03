@@ -10,7 +10,7 @@ func New() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "list",
 		Short: "list daily files",
-		Long:  "list daily files in your cronicle journal.",
+		Long:  "list daily files",
 		Run:   run,
 	}
 

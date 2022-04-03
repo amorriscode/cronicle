@@ -10,9 +10,9 @@ import (
 
 func New() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "complete",
-		Short: "complete a todo entry with number on ordered list as arg",
-		Long:  "complete a todo entry in your cronicle journal.",
+		Use:   "complete [ID!]",
+		Short: "complete a todo entry",
+		Long:  "complete a todo entry",
 		Run:   run,
 	}
 
@@ -24,7 +24,7 @@ func run(cmd *cobra.Command, args []string) {
 
 	n, err := strconv.Atoi(args[0])
 	if err != nil || n == 0 || n > len(files) {
-		fmt.Printf("Number is not valid")
+		fmt.Printf("Invalid argument")
 		return
 	}
 

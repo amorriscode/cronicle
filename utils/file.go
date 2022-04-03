@@ -57,6 +57,9 @@ func EditFile(path string) {
 	v.Stdout = os.Stdout
 	if err := v.Run(); err != nil {
 		log.Fatal(constants.ERROR_OPEN_FILE, err)
+	}
+}
+
 func DeleteFile(f string, t string) {
 	d := GetPath([]string{t})
 	e := os.Remove(filepath.Join(d, f))
