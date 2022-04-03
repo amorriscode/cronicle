@@ -49,7 +49,7 @@ tags: [pr]
 
 - [x] Review PR for updating UI during create events
 
-## Logs
+## Daily
 
 - Reviewed [PR](https://github.com/12products/warroom-frontend/pull/46) for updating UI during create events
 ```

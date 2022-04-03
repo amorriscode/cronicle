@@ -1,4 +1,4 @@
-package update
+package delete
 
 import (
 	"log"
@@ -8,9 +8,9 @@ import (
 
 func New() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update",
-		Short: "Update a today entry",
-		Long:  "Update a today entry in your cronicle journal.",
+		Use:   "delete",
+		Short: "delete a daily file",
+		Long:  "delete a daily file in your cronicle journal.",
 		Run:   run,
 	}
 
@@ -18,5 +18,5 @@ func New() *cobra.Command {
 }
 
 func run(cmd *cobra.Command, args []string) {
-	log.Println("Updating a today doc...")
+	log.Println("Deleting a log doc...")
 }

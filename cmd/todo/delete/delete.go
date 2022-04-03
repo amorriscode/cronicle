@@ -10,8 +10,8 @@ import (
 func New() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "delete",
-		Short: "Delete a todo entry",
-		Long:  "Delete a todo entry in your cronicle journal.",
+		Short: "delete a todo entry",
+		Long:  "delete a todo entry in your cronicle journal.",
 		Run:   run,
 	}
 
@@ -24,7 +24,7 @@ func New() *cobra.Command {
 func run(cmd *cobra.Command, args []string) {
 	n, _ := cmd.Flags().GetInt("number")
 
-	files := utils.GetAllTodos()
+	files := utils.GetAllFiles("todo")
 
 	if n == 0 || n > len(files) {
 		fmt.Printf("Number is not valid")
@@ -32,4 +32,5 @@ func run(cmd *cobra.Command, args []string) {
 	}
 
 	utils.DeleteTodo(files[n-1].Name())
+	utils.ListTodos()
 }
