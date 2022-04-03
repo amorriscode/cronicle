@@ -16,44 +16,39 @@ type Column struct {
 	Grow  *bool
 }
 
-type Row []string
-
-type Model struct {
+type SectionModel struct {
 	ctx      *context.Context
-	Rows     []Row
+	todos    []string
 	viewport viewport.Model
 	currRow  int
 }
 
-func New(ctx *context.Context) Model {
-	rows := []Row{{"hey", "ho", "let's go"}, {"hey", "ho", "let's go"}, {"hey", "ho", "let's go"}, {"hey", "ho", "let's go"}}
-
-	m := Model{
+func NewSectionUI(ctx *context.Context) SectionModel {
+	m := SectionModel{
 		ctx:     ctx,
-		Rows:    rows,
 		currRow: 0,
 	}
 
 	m.viewport = viewport.New(m.getDimensions().Width, m.getDimensions().Height)
 
-	m.SetRows(rows)
+	m.setTodos(getTodos())
 
 	return m
 }
 
-func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
+func (m SectionModel) Update(msg tea.Msg) (SectionModel, tea.Cmd) {
 	var cmd tea.Cmd
 
-	if len(m.Rows) > 0 {
+	if len(m.todos) > 0 {
 		switch msg := msg.(type) {
 		case tea.KeyMsg:
 			switch {
 			case key.Matches(msg, utils.Keys.Down):
-				m.currRow = (m.currRow + 1) % len(m.Rows)
+				m.currRow = (m.currRow + 1) % len(m.todos)
 			case key.Matches(msg, utils.Keys.Up):
 				newRow := m.currRow - 1
 				if newRow < 0 {
-					newRow = len(m.Rows) - 1
+					newRow = len(m.todos) - 1
 				}
 				m.currRow = newRow
 			}
@@ -65,25 +60,25 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 	return m, cmd
 }
 
-func (m Model) View() string {
-	m.SetRows(m.Rows)
+func (m SectionModel) View() string {
+	m.setTodos(m.todos)
 
 	return lipgloss.JoinVertical(lipgloss.Left, m.viewport.View())
 }
 
-func (m *Model) SetRows(rows []Row) {
-	m.Rows = rows
+func (m *SectionModel) setTodos(todos []string) {
+	m.todos = todos
 
-	renderedRows := make([]string, 0, len(m.Rows))
+	renderedTodos := make([]string, 0, len(m.todos))
 
-	for i := range m.Rows {
-		renderedRows = append(renderedRows, m.renderRow(i))
+	for i := range m.todos {
+		renderedTodos = append(renderedTodos, m.renderTodo(i))
 	}
 
-	m.viewport.SetContent(lipgloss.JoinVertical(lipgloss.Left, renderedRows...))
+	m.viewport.SetContent(lipgloss.JoinVertical(lipgloss.Left, renderedTodos...))
 }
 
-func (m *Model) renderRow(row int) string {
+func (m *SectionModel) renderTodo(row int) string {
 	var style lipgloss.Style
 
 	if m.currRow == row {
@@ -92,29 +87,26 @@ func (m *Model) renderRow(row int) string {
 		style = cellStyle
 	}
 
-	renderedColumns := make([]string, 2)
-
-	for _, column := range m.Rows[row] {
-		renderedColumns = append(
-			renderedColumns,
-			style.Copy().Render(column),
-		)
-	}
-
 	return rowStyle.Copy().Render(
-		lipgloss.JoinHorizontal(lipgloss.Top, renderedColumns...),
+		lipgloss.JoinHorizontal(lipgloss.Top, style.Copy().Render(m.todos[row])),
 	)
 }
 
-func (m *Model) getDimensions() constants.Dimensions {
+func (m *SectionModel) getDimensions() constants.Dimensions {
 	return constants.Dimensions{
 		Height: m.ctx.ContentHeight - 2,
 		Width:  m.ctx.ContentWidth,
 	}
 }
 
-func (m *Model) UpdateContext(ctx *context.Context) {
+func (m *SectionModel) UpdateContext(ctx *context.Context) {
 	m.ctx = ctx
 	m.viewport.Height = m.getDimensions().Height
 	m.viewport.Width = m.getDimensions().Width
+}
+
+func getTodos() []string {
+	var r []string
+	todos := utils.GetAllTodos()
+	return append(r, todos...)
 }

@@ -2,24 +2,30 @@ package ui
 
 import (
 	"cronicle/ui/components/help"
+	"cronicle/ui/components/pages"
 	"cronicle/ui/components/section"
 	"cronicle/ui/components/sections"
 	"cronicle/ui/components/tabs"
+	"cronicle/ui/components/todo"
 	"cronicle/ui/context"
+	"cronicle/utils"
 
-	"strings"
-
+	"github.com/charmbracelet/bubbles/key"
 	tea "github.com/charmbracelet/bubbletea"
 )
 
 type Model struct {
-	ctx      context.Context
-	sections sections.Model
+	ctx          context.Context
+	page         string
+	sections     sections.Model
+	todoCreateUI todo.CreateModel
 }
 
 func New() Model {
 	m := Model{
-		sections: sections.New(),
+		page:         "sections",
+		sections:     sections.New(),
+		todoCreateUI: todo.NewCreateUI(),
 	}
 
 	return m
@@ -31,31 +37,56 @@ func (m Model) Init() tea.Cmd {
 
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var (
-		cmd         tea.Cmd
-		cmds        []tea.Cmd
-		sectionsCmd tea.Cmd
+		cmd           tea.Cmd
+		cmds          []tea.Cmd
+		sectionsCmd   tea.Cmd
+		todoCreateCmd tea.Cmd
 	)
 
 	switch msg := msg.(type) {
+	case tea.KeyMsg:
+		switch {
+		case key.Matches(msg, utils.Keys.Todo):
+			m.page = "createTodo"
+			return m, nil
+
+		case key.Matches(msg, utils.Keys.Escape):
+			m.page = "sections"
+
+		case key.Matches(msg, utils.Keys.Quit):
+			cmd = tea.Quit
+		}
+
 	case tea.WindowSizeMsg:
 		m.onWindowSizeChanged(msg)
+
+	case pages.ChangePageMsg:
+		m.page = msg.Page
 	}
 
 	m.syncContext()
 
-	m.sections, sectionsCmd = m.sections.Update(msg)
+	if m.page == "sections" {
+		m.sections, sectionsCmd = m.sections.Update(msg)
+		cmds = append(cmds, sectionsCmd)
+	}
 
-	cmds = append(cmds, cmd, sectionsCmd)
+	if m.page == "createTodo" {
+		m.todoCreateUI, todoCreateCmd = m.todoCreateUI.Update(msg)
+		cmds = append(cmds, todoCreateCmd)
+	}
+
+	cmds = append(cmds, cmd)
 
 	return m, tea.Batch(cmds...)
 }
 
 func (m Model) View() string {
-	s := strings.Builder{}
+	if m.page == "createTodo" {
+		return m.todoCreateUI.View()
+	}
 
-	s.WriteString(m.sections.View())
-
-	return s.String()
+	return m.sections.View()
 }
 
 func (m *Model) onWindowSizeChanged(msg tea.WindowSizeMsg) {

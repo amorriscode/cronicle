@@ -13,6 +13,7 @@ type KeyMap struct {
 	ScrollDown  key.Binding
 	Help        key.Binding
 	Quit        key.Binding
+	Escape      key.Binding
 	Todo        key.Binding
 }
 
@@ -59,6 +60,10 @@ var (
 		Quit: key.NewBinding(
 			key.WithKeys("q", "ctrl+c"),
 			key.WithHelp("q", "quit"),
+		),
+		Escape: key.NewBinding(
+			key.WithKeys("esc"),
+			key.WithHelp("esc", "return to sections"),
 		),
 		Todo: key.NewBinding(
 			key.WithKeys("t"),
