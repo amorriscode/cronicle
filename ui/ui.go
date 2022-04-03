@@ -61,7 +61,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.onWindowSizeChanged(msg)
 
 	case pages.ChangePageMsg:
-		m.page = "sections"
+		m.page = msg.Page
 	}
 
 	m.syncContext()
