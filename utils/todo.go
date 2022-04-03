@@ -70,6 +70,7 @@ func DeleteTodo(fileName string) {
 
 func CheckTodo(todo string) string {
 	var c strings.Builder
+
 	m := ParseContent(todo)
 	c.WriteString(m[2:3])
 	c.WriteString("x")
@@ -78,18 +79,43 @@ func CheckTodo(todo string) string {
 	return c.String()
 }
 
-func ListTodos() {
-	path := GetPath([]string{"todo"})
+func GetTodoFilePaths() []fs.FileInfo {
+	p := GetPath([]string{"todo"})
 
-	files, err := ioutil.ReadDir(path)
+	f, err := ioutil.ReadDir(p)
 	if err != nil {
 		log.Fatal(constants.ERROR_LIST_FILE, err)
 	}
 
+	return f
+}
+
+func GetTodoFromFile(fileName string) string {
+	path := GetPath([]string{"todo", fileName})
+	todo := GetDataFromFile(path)
+	return todo
+}
+
+func GetAllTodos() []string {
+	var todos []string
+
+	files := GetTodoFilePaths()
+
+	for _, f := range files {
+		todo := GetTodoFromFile(f.Name())
+		todos = append(todos, ParseContent(todo))
+	}
+
+	return todos
+}
+
+func ListTodos() {
+	files := GetTodoFilePaths()
+
 	for i, f := range files {
-		path := GetPath([]string{"todo", f.Name()})
-		todo := GetDataFromFile(path)
-		message := ParseContent(todo)
-		fmt.Printf("%v. %s", i+1, message[6:])
+		todo := GetTodoFromFile(f.Name())
+		task := ParseContent(todo)
+
+		fmt.Printf("%v. %s", i+1, task[6:])
 	}
 }

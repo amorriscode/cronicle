@@ -4,7 +4,6 @@ import (
 	"cronicle/ui/constants"
 	"cronicle/ui/context"
 	"cronicle/utils"
-	"log"
 
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/viewport"
@@ -17,18 +16,14 @@ type Column struct {
 	Grow  *bool
 }
 
-type Row []string
-
 type SectionModel struct {
 	ctx      *context.Context
-	Rows     []Row
+	todos    []string
 	viewport viewport.Model
 	currRow  int
 }
 
 func NewSectionUI(ctx *context.Context) SectionModel {
-	// todos := utils.GetAllTodos()
-
 	m := SectionModel{
 		ctx:     ctx,
 		currRow: 0,
@@ -36,8 +31,7 @@ func NewSectionUI(ctx *context.Context) SectionModel {
 
 	m.viewport = viewport.New(m.getDimensions().Width, m.getDimensions().Height)
 
-	rows := getTodos()
-	m.SetRows(rows)
+	m.setTodos(getTodos())
 
 	return m
 }
@@ -45,16 +39,16 @@ func NewSectionUI(ctx *context.Context) SectionModel {
 func (m SectionModel) Update(msg tea.Msg) (SectionModel, tea.Cmd) {
 	var cmd tea.Cmd
 
-	if len(m.Rows) > 0 {
+	if len(m.todos) > 0 {
 		switch msg := msg.(type) {
 		case tea.KeyMsg:
 			switch {
 			case key.Matches(msg, utils.Keys.Down):
-				m.currRow = (m.currRow + 1) % len(m.Rows)
+				m.currRow = (m.currRow + 1) % len(m.todos)
 			case key.Matches(msg, utils.Keys.Up):
 				newRow := m.currRow - 1
 				if newRow < 0 {
-					newRow = len(m.Rows) - 1
+					newRow = len(m.todos) - 1
 				}
 				m.currRow = newRow
 			}
@@ -67,24 +61,24 @@ func (m SectionModel) Update(msg tea.Msg) (SectionModel, tea.Cmd) {
 }
 
 func (m SectionModel) View() string {
-	m.SetRows(m.Rows)
+	m.setTodos(m.todos)
 
 	return lipgloss.JoinVertical(lipgloss.Left, m.viewport.View())
 }
 
-func (m *SectionModel) SetRows(rows []Row) {
-	m.Rows = rows
+func (m *SectionModel) setTodos(todos []string) {
+	m.todos = todos
 
-	renderedRows := make([]string, 0, len(m.Rows))
+	renderedTodos := make([]string, 0, len(m.todos))
 
-	for i := range m.Rows {
-		renderedRows = append(renderedRows, m.renderRow(i))
+	for i := range m.todos {
+		renderedTodos = append(renderedTodos, m.renderTodo(i))
 	}
 
-	m.viewport.SetContent(lipgloss.JoinVertical(lipgloss.Left, renderedRows...))
+	m.viewport.SetContent(lipgloss.JoinVertical(lipgloss.Left, renderedTodos...))
 }
 
-func (m *SectionModel) renderRow(row int) string {
+func (m *SectionModel) renderTodo(row int) string {
 	var style lipgloss.Style
 
 	if m.currRow == row {
@@ -93,17 +87,8 @@ func (m *SectionModel) renderRow(row int) string {
 		style = cellStyle
 	}
 
-	renderedColumns := make([]string, 2)
-
-	for _, column := range m.Rows[row] {
-		renderedColumns = append(
-			renderedColumns,
-			style.Copy().Render(column),
-		)
-	}
-
 	return rowStyle.Copy().Render(
-		lipgloss.JoinHorizontal(lipgloss.Top, renderedColumns...),
+		lipgloss.JoinHorizontal(lipgloss.Top, style.Copy().Render(m.todos[row])),
 	)
 }
 
@@ -120,18 +105,8 @@ func (m *SectionModel) UpdateContext(ctx *context.Context) {
 	m.viewport.Width = m.getDimensions().Width
 }
 
-func getTodos() []Row {
-	var todoRows []Row
-
+func getTodos() []string {
+	var r []string
 	todos := utils.GetAllTodos()
-
-	for _, todoPath := range todos {
-		todo := utils.GetTodoFromFile(todoPath)
-		log.Println(todo)
-		// todoRows = append(todoRows, Row{todo.Text})
-	}
-
-	todoRows = append(todoRows, Row{"Todo 1", "Todo 2", "Todo 3"})
-
-	return todoRows
+	return append(r, todos...)
 }
