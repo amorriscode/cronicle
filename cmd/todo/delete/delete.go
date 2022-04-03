@@ -3,6 +3,7 @@ package delete
 import (
 	"cronicle/utils"
 	"fmt"
+	"strconv"
 
 	"github.com/spf13/cobra"
 )
@@ -15,22 +16,19 @@ func New() *cobra.Command {
 		Run:   run,
 	}
 
-	cmd.Flags().IntP("number", "n", 0, "number on ordered list to delete")
-	cmd.MarkFlagRequired("number")
-
 	return cmd
 }
 
 func run(cmd *cobra.Command, args []string) {
-	n, _ := cmd.Flags().GetInt("number")
 
 	files := utils.GetAllFiles("todo")
 
-	if n == 0 || n > len(files) {
+	n, err := strconv.Atoi(args[0])
+	if err != nil || n == 0 || n > len(files) {
 		fmt.Printf("Number is not valid")
 		return
 	}
 
-	utils.DeleteTodo(files[n-1].Name())
+	utils.DeleteFile(files[n-1].Name(), "todo")
 	utils.ListTodos()
 }

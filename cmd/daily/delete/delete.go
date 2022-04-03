@@ -1,7 +1,9 @@
 package delete
 
 import (
-	"log"
+	"cronicle/utils"
+	"fmt"
+	"strconv"
 
 	"github.com/spf13/cobra"
 )
@@ -18,5 +20,14 @@ func New() *cobra.Command {
 }
 
 func run(cmd *cobra.Command, args []string) {
-	log.Println("Deleting a log doc...")
+	files := utils.GetAllFiles("daily")
+
+	n, err := strconv.Atoi(args[0])
+	if err != nil || n == 0 || n > len(files) {
+		fmt.Printf("Number is not valid")
+		return
+	}
+
+	utils.DeleteFile(files[n-1].Name(), "daily")
+	utils.ListFiles("daily")
 }
