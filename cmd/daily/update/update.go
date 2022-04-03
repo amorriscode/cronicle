@@ -10,9 +10,9 @@ import (
 
 func New() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update",
-		Short: "update a daily file in vim",
-		Long:  "update a daily file with number on ordered list as arg",
+		Use:   "update [ID]",
+		Short: "update a daily entry",
+		Long:  "update a daily entry",
 		Run:   run,
 	}
 
@@ -24,7 +24,7 @@ func run(cmd *cobra.Command, args []string) {
 
 	n, err := strconv.Atoi(args[0])
 	if err != nil || n == 0 || n > len(files) {
-		fmt.Printf("Number is not valid")
+		fmt.Printf("Invalid argument")
 		return
 	}
 
