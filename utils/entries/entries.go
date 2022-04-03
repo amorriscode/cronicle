@@ -3,12 +3,15 @@ package entries
 import (
 	"cronicle/ui/constants"
 	"cronicle/utils"
+	"cronicle/utils/types"
 	"errors"
 	"fmt"
 	"log"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/adrg/frontmatter"
 )
 
 func getDate() string {
@@ -84,4 +87,41 @@ func composeEntry(w utils.WriteParams, t string) string {
 	output.WriteString(strings.TrimSpace(w.Message))
 
 	return output.String()
+}
+
+func DeleteEntry(t string, id int) {
+	files := utils.GetAllFiles(t)
+
+	utils.DeleteFile(files[id].Name(), t)
+}
+
+func EditEntry(t string, id int) {
+	files := utils.GetAllFiles(t)
+
+	path := utils.GetPath([]string{t, files[id].Name()})
+
+	utils.EditFile(path)
+}
+
+func GetEntryDisplayOptions(t string) []types.EntryProperties {
+	var matter types.EntryProperties
+	var options []types.EntryProperties
+	files := utils.GetAllFiles(t)
+
+	for _, f := range files {
+		path := utils.GetPath([]string{t, f.Name()})
+		content := utils.GetDataFromFile(path)
+		rest, err := frontmatter.Parse(strings.NewReader(content), &matter)
+		if err != nil {
+			log.Println(err)
+		}
+		a := strings.Split(string(rest), "\n")
+		b := strings.Join(a, ",")
+		matter.Entry = utils.TruncateText(string(rest)[6:], constants.MaxLengthDisplayOption)
+		matter.EntryDetails = utils.TruncateText(b, constants.MaxLengthDetails)
+		matter.FileName = f.Name()
+		options = append(options, matter)
+	}
+
+	return options
 }

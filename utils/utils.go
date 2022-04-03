@@ -1,5 +1,9 @@
 package utils
 
+import (
+	"strings"
+)
+
 func Max(a, b int) int {
 	if a > b {
 		return a
@@ -25,4 +29,18 @@ func Contains(s []string, e string) bool {
 		}
 	}
 	return false
+}
+
+func TruncateText(s string, max int) string {
+	t := strings.TrimSpace(s)
+
+	if max > len(t) {
+		return t
+	}
+
+	if strings.LastIndex(s[:max], " ") == -1 {
+		return s[:max]
+	}
+
+	return s[:strings.LastIndex(s[:max], " ")] + "..."
 }

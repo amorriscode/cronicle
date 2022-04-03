@@ -4,12 +4,15 @@ import (
 	"cronicle/ui/constants"
 	"cronicle/utils"
 	"cronicle/utils/entries"
+	"cronicle/utils/prompts"
+	"cronicle/utils/types"
 	"fmt"
 	"io/fs"
-	"io/ioutil"
 	"log"
 	"strings"
 	"time"
+
+	"github.com/adrg/frontmatter"
 )
 
 func ComposeTodo(w utils.WriteParams) string {
@@ -73,17 +76,6 @@ func CheckTodo(todo string) string {
 	return c.String()
 }
 
-func GetTodoFilePaths() []fs.FileInfo {
-	p := utils.GetPath([]string{"todo"})
-
-	f, err := ioutil.ReadDir(p)
-	if err != nil {
-		log.Fatal(constants.ERROR_LIST_FILE, err)
-	}
-
-	return f
-}
-
 func GetTodoFromFile(fileName string) string {
 	path := utils.GetPath([]string{"todo", fileName})
 	todo := utils.GetDataFromFile(path)
@@ -93,7 +85,7 @@ func GetTodoFromFile(fileName string) string {
 func GetAllTodos() []string {
 	var todos []string
 
-	files := GetTodoFilePaths()
+	files := utils.GetAllFiles("todo")
 
 	for _, f := range files {
 		todo := GetTodoFromFile(f.Name())
@@ -104,7 +96,7 @@ func GetAllTodos() []string {
 }
 
 func ListTodos() {
-	files := GetTodoFilePaths()
+	files := utils.GetAllFiles("todo")
 
 	for i, f := range files {
 		todo := GetTodoFromFile(f.Name())
@@ -112,4 +104,56 @@ func ListTodos() {
 
 		fmt.Printf("%v. %s", i+1, task[6:])
 	}
+}
+
+func GetTodoDisplayOptions() []types.TodoProperties {
+	var matter types.TodoProperties
+	var options []types.TodoProperties
+	files := utils.GetAllFiles("todo")
+
+	for _, f := range files {
+		content := GetTodoFromFile(f.Name())
+		rest, err := frontmatter.Parse(strings.NewReader(content), &matter)
+		if err != nil {
+			log.Println(err)
+		}
+		matter.Todo = utils.TruncateText(string(rest)[6:], constants.MaxLengthDisplayOption)
+		matter.TodoDetails = utils.TruncateText(string(rest)[6:], constants.MaxLengthDetails)
+		options = append(options, matter)
+	}
+
+	return options
+}
+
+func EditTodo() {
+	todoOptions := GetTodoDisplayOptions()
+	id, err := prompts.SelectTodo(todoOptions, "update")
+
+	if err != nil {
+		log.Fatal(constants.ERROR_PROMPT, err)
+	}
+
+	entries.EditEntry("todo", id)
+}
+
+func DeleteTodo() {
+	todoOptions := GetTodoDisplayOptions()
+	id, err := prompts.SelectTodo(todoOptions, "delete")
+
+	if err != nil {
+		log.Fatal(constants.ERROR_PROMPT, err)
+	}
+
+	entries.DeleteEntry("todo", id)
+}
+
+func CompleteTodo() {
+	todoOptions := GetTodoDisplayOptions()
+	id, err := prompts.SelectTodo(todoOptions, "complete")
+
+	if err != nil {
+		log.Fatal(constants.ERROR_PROMPT, err)
+	}
+	files := utils.GetAllFiles("todo")
+	MarkCompleted(files[id])
 }
