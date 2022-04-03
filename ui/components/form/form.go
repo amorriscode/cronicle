@@ -7,6 +7,7 @@ import (
 
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 )
 
 type Model struct {
@@ -63,20 +64,6 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 			}
 
 			cmds := make([]tea.Cmd, len(m.Inputs))
-			for i := 0; i <= len(m.Inputs)-1; i++ {
-				if i == m.focusIndex {
-					// Set focused state
-					cmds[i] = m.Inputs[i].Focus()
-					m.Inputs[i].PromptStyle = focusedStyle
-					m.Inputs[i].TextStyle = focusedStyle
-					continue
-				}
-
-				// Remove focused state
-				m.Inputs[i].Blur()
-				m.Inputs[i].PromptStyle = noStyle
-				m.Inputs[i].TextStyle = noStyle
-			}
 
 			return m, tea.Batch(cmds...)
 		}
@@ -91,7 +78,7 @@ func (m Model) View() string {
 	var b strings.Builder
 
 	for i := range m.Inputs {
-		b.WriteString(m.Inputs[i].View())
+		b.WriteString(m.renderInput(i))
 		if i < len(m.Inputs)-1 {
 			b.WriteRune('\n')
 		}
@@ -109,6 +96,22 @@ func (m Model) View() string {
 	fmt.Fprintf(&b, "\n\n%s", *button)
 
 	return b.String()
+}
+
+func (m *Model) renderInput(input int) string {
+	if m.focusIndex == input {
+		m.Inputs[input].PromptStyle = focusedStyle
+		m.Inputs[input].TextStyle = focusedStyle
+		m.Inputs[input].Focus()
+	} else {
+		m.Inputs[input].PromptStyle = noStyle
+		m.Inputs[input].TextStyle = noStyle
+		m.Inputs[input].Blur()
+	}
+
+	return lipgloss.NewStyle().Render(
+		lipgloss.JoinHorizontal(lipgloss.Top, m.Inputs[input].View()),
+	)
 }
 
 func (m *Model) updateInputs(msg tea.Msg) tea.Cmd {

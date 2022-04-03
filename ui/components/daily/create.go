@@ -1,14 +1,13 @@
-package todo
+package daily
 
 import (
 	"cronicle/ui/components/form"
 	"cronicle/utils"
-	"cronicle/utils/todo"
+	"cronicle/utils/entries"
 
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/google/uuid"
 )
 
 type CreateModel struct {
@@ -18,7 +17,7 @@ type CreateModel struct {
 func NewCreateForm() CreateModel {
 	m := CreateModel{}
 
-	inputs := make([]textinput.Model, 3)
+	inputs := make([]textinput.Model, 2)
 
 	var t textinput.Model
 	for i := range inputs {
@@ -29,16 +28,13 @@ func NewCreateForm() CreateModel {
 		case 0:
 			t.Placeholder = "Comma-separated tags (optional)"
 		case 1:
-			t.Placeholder = "Due date - YYYY-MM-DD (optional)"
-		case 2:
-			t.Placeholder = "Task"
-			t.Focus()
+			t.Placeholder = "Entry"
 		}
 
 		inputs[i] = t
 	}
 
-	m.form = form.New(inputs, validate, onSubmit, 2)
+	m.form = form.New(inputs, validate, onSubmit, 1)
 
 	return m
 }
@@ -50,16 +46,15 @@ func (m CreateModel) Update(msg tea.Msg) (CreateModel, tea.Cmd) {
 }
 
 func (m CreateModel) View() string {
-	return lipgloss.NewStyle().Render(lipgloss.JoinVertical(lipgloss.Top, lipgloss.NewStyle().Render("Create a todo\n"), m.form.View()))
+	return lipgloss.NewStyle().Render(lipgloss.JoinVertical(lipgloss.Top, lipgloss.NewStyle().Render("Create a daily entry\n"), m.form.View()))
 }
 
 func validate(m *form.Model) {
-	if m.Inputs[2].Value() == "" {
-		m.Errors = append(m.Errors, "task cannot be empty")
+	if m.Inputs[1].Value() == "" {
+		m.Errors = append(m.Errors, "entry cannot be empty")
 	}
 }
 
 func onSubmit(m *form.Model) {
-	todo := todo.ComposeTodo(utils.WriteParams{Tags: m.Inputs[0].Value(), Date: m.Inputs[1].Value(), Message: m.Inputs[2].Value()})
-	utils.WriteToFile(todo, utils.GetPath([]string{"todo", uuid.NewString() + ".md"}))
+	entries.WriteOrCreateEntry(utils.WriteParams{Tags: m.Inputs[0].Value(), Message: m.Inputs[1].Value()}, "daily")
 }
