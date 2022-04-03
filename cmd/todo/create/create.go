@@ -11,8 +11,8 @@ func New() *cobra.Command {
 	cmd :=
 		&cobra.Command{
 			Use:   "create",
-			Short: "Create a new todo",
-			Long:  "Create a new todo in your cronicle journal.",
+			Short: "create a new todo",
+			Long:  "create a new todo in your cronicle journal.",
 			Run:   run,
 		}
 
@@ -31,5 +31,5 @@ func run(cmd *cobra.Command, args []string) {
 	todo := utils.ComposeTodo(utils.WriteParams{Message: m, Date: d, Tags: t})
 
 	utils.WriteToFile(todo, utils.GetPath([]string{"todo", uuid.NewString() + ".md"}))
-	utils.ListTodo()
+	utils.ListTodos()
 }

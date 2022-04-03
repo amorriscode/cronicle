@@ -10,8 +10,8 @@ import (
 func New() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "delete",
-		Short: "Delete a todo entry",
-		Long:  "Delete a todo entry in your cronicle journal.",
+		Short: "delete a todo entry",
+		Long:  "delete a todo entry in your cronicle journal.",
 		Run:   run,
 	}
 
@@ -32,5 +32,5 @@ func run(cmd *cobra.Command, args []string) {
 	}
 
 	utils.DeleteTodo(files[n-1].Name())
-	utils.ListTodo()
+	utils.ListTodos()
 }

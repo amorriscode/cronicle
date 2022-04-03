@@ -14,8 +14,8 @@ func New() *cobra.Command {
 		Run:   run,
 	}
 
-	cmd.Flags().StringP("message", "m", "", "content of your todo")
-	cmd.Flags().StringP("tags", "t", "", "comma separated tags of your todo")
+	cmd.Flags().StringP("message", "m", "", "content of your daily entry")
+	cmd.Flags().StringP("tags", "t", "", "comma separated tags of your daily entry")
 
 	return cmd
 }
@@ -23,5 +23,5 @@ func New() *cobra.Command {
 func run(cmd *cobra.Command, args []string) {
 	m, _ := cmd.Flags().GetString("message")
 	t, _ := cmd.Flags().GetString("tags")
-	utils.AddToCurrentDaily(utils.WriteDailyParams{Message: m, Tags: t})
+	utils.WriteOrCreateDaily(utils.WriteDailyParams{Message: m, Tags: t})
 }

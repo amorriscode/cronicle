@@ -19,11 +19,11 @@ func GetDate() string {
 	return time.Format("2006-01-02")
 }
 
-func AddToCurrentDaily(w WriteDailyParams) {
+func WriteOrCreateDaily(w WriteDailyParams) {
 	path := GetPath([]string{"daily", GetDate() + ".md"})
 	if _, err := os.Stat(path); err == nil {
 		// current daily file exists
-		AddEntry(w)
+		appendEntry(w)
 	} else if errors.Is(err, os.ErrNotExist) {
 		// no daily file created yet
 		createdDateTime := time.Now().Format("2006-01-02 15:04")
@@ -36,7 +36,7 @@ func AddToCurrentDaily(w WriteDailyParams) {
 
 }
 
-func AddEntry(w WriteDailyParams) {
+func appendEntry(w WriteDailyParams) {
 	// merge tags
 	path := GetPath([]string{"daily", GetDate() + ".md"})
 	daily := GetDataFromFile(path)

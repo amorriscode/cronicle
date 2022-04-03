@@ -55,7 +55,7 @@ func MarkCompleted(f fs.FileInfo) {
 	tags := ParseHeader(todo).Tags
 	// get today's log file, update log file: add to exisiting tags, append complted todo
 	// if file does not exist, call create log file and update log file
-	AddToCurrentDaily(WriteDailyParams{Message: checkedTodo, Tags: strings.Join(tags, ",")})
+	WriteOrCreateDaily(WriteDailyParams{Message: checkedTodo, Tags: strings.Join(tags, ",")})
 	DeleteTodo(f.Name())
 }
 
@@ -78,7 +78,7 @@ func CheckTodo(todo string) string {
 	return c.String()
 }
 
-func ListTodo() {
+func ListTodos() {
 	path := GetPath([]string{"todo"})
 
 	files, err := ioutil.ReadDir(path)
@@ -90,6 +90,6 @@ func ListTodo() {
 		path := GetPath([]string{"todo", f.Name()})
 		todo := GetDataFromFile(path)
 		message := ParseContent(todo)
-		fmt.Printf("%v. %s\n", i+1, message[6:])
+		fmt.Printf("%v. %s", i+1, message[6:])
 	}
 }

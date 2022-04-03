@@ -18,5 +18,5 @@ func New() *cobra.Command {
 }
 
 func run(cmd *cobra.Command, args []string) {
-	utils.ListTodo()
+	utils.ListTodos()
 }

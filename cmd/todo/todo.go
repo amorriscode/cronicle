@@ -14,8 +14,8 @@ import (
 func New() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "todo",
-		Short: "Manage your todos",
-		Long:  "Manage the todos in your cronicle journal.",
+		Short: "manage your todos",
+		Long:  "manage the todos in your cronicle journal.",
 	}
 
 	// Ensure todo storage dir exists on execute

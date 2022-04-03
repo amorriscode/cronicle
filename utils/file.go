@@ -21,19 +21,19 @@ type UpdateParams struct {
 }
 
 func GetDataFromFile(path string) string {
-	dat, _ := os.ReadFile(path)
-	return string(dat)
+	d, _ := os.ReadFile(path)
+	return string(d)
 }
 
-func GetAllFiles(dataType string) []fs.FileInfo {
-	dirPath := GetPath([]string{dataType})
-	files, _ := ioutil.ReadDir(dirPath)
-	return files
+func GetAllFiles(d string) []fs.FileInfo {
+	p := GetPath([]string{d})
+	f, _ := ioutil.ReadDir(p)
+	return f
 }
 
 func WriteToFile(m string, fn string) {
 	// create or replace
-	f, err := os.OpenFile(fn, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
+	f, err := os.OpenFile(fn, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0644)
 	if err != nil {
 		log.Fatal(constants.ERROR_OPEN_FILE, err)
 	}
@@ -73,12 +73,7 @@ type Header struct {
 }
 
 func ParseHeader(content string) Header {
-	var matter struct {
-		Date string   `yaml:"date"`
-		Due  string   `yaml:"due"`
-		Type string   `yaml:"type"`
-		Tags []string `yaml:"tags"`
-	}
+	var matter Header
 
 	_, err := frontmatter.Parse(strings.NewReader(content), &matter)
 	if err != nil {
