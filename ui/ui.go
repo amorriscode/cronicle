@@ -1,8 +1,6 @@
 package ui
 
 import (
-	"cronicle/ui/components/brag"
-	"cronicle/ui/components/daily"
 	"cronicle/ui/components/help"
 	"cronicle/ui/components/pages"
 	"cronicle/ui/components/section"
@@ -27,7 +25,7 @@ func New() Model {
 	m := Model{
 		page:         "sections",
 		sections:     sections.New(),
-		todoCreateUI: todo.NewCreateUI(),
+		todoCreateUI: todo.NewCreateForm(),
 	}
 
 	return m
@@ -51,14 +49,6 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case key.Matches(msg, utils.Keys.Todo):
 			m.page = "createTodo"
 			return m, nil
-
-		case key.Matches(msg, utils.Keys.Daily):
-			daily.Edit()
-			return m, tea.Quit
-
-		case key.Matches(msg, utils.Keys.Brag):
-			brag.Edit()
-			return m, tea.Quit
 
 		case key.Matches(msg, utils.Keys.Escape):
 			m.page = "sections"
