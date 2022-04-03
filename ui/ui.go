@@ -25,7 +25,7 @@ func New() Model {
 	m := Model{
 		page:         "sections",
 		sections:     sections.New(),
-		todoCreateUI: todo.NewCreateUI(),
+		todoCreateUI: todo.NewCreateForm(),
 	}
 
 	return m

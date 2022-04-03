@@ -15,6 +15,8 @@ type KeyMap struct {
 	Quit        key.Binding
 	Escape      key.Binding
 	Todo        key.Binding
+	Daily       key.Binding
+	Brag        key.Binding
 }
 
 func (k KeyMap) ShortHelp() []key.Binding {
@@ -26,7 +28,7 @@ func (k KeyMap) FullHelp() [][]key.Binding {
 		{k.Up, k.Down},
 		{k.ScrollUp, k.ScrollDown},
 		{k.PrevSection, k.NextSection},
-		{k.Todo},
+		// {k.Todo, k.Daily, k.Brag},
 		{k.Quit},
 	}
 }
@@ -67,7 +69,15 @@ var (
 		),
 		Todo: key.NewBinding(
 			key.WithKeys("t"),
-			key.WithHelp("t", "todo"),
+			key.WithHelp("t", "create todo"),
+		),
+		Daily: key.NewBinding(
+			key.WithKeys("d"),
+			key.WithHelp("d", "create daily log"),
+		),
+		Brag: key.NewBinding(
+			key.WithKeys("b"),
+			key.WithHelp("b", "create brag log"),
 		),
 	}
 )
