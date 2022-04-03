@@ -1,7 +1,9 @@
-package utils
+package todo
 
 import (
 	"cronicle/ui/constants"
+	"cronicle/utils"
+	"cronicle/utils/entries"
 	"fmt"
 	"io/fs"
 	"io/ioutil"
@@ -10,7 +12,7 @@ import (
 	"time"
 )
 
-func ComposeTodo(w WriteParams) string {
+func ComposeTodo(w utils.WriteParams) string {
 	output := strings.Builder{}
 	// header
 	output.WriteString("---\n")
@@ -47,17 +49,17 @@ func ComposeTodo(w WriteParams) string {
 
 func MarkCompleted(f fs.FileInfo) {
 	//add todo list  to log
-	path := GetPath([]string{"todo", f.Name()})
-	todo := GetDataFromFile(path)
+	path := utils.GetPath([]string{"todo", f.Name()})
+	todo := utils.GetDataFromFile(path)
 	checkedTodo := CheckTodo(todo)
-	tags := ParseHeader(todo).Tags
+	tags := utils.ParseHeader(todo).Tags
 	//add completed todo to log
-	WriteOrCreateEntry(WriteEntryParams{Message: checkedTodo, Tags: strings.Join(tags, ",")}, "daily")
-	DeleteFile(f.Name(), "todo")
+	entries.WriteOrCreateEntry(utils.WriteParams{Message: checkedTodo, Tags: strings.Join(tags, ",")}, "daily")
+	utils.DeleteFile(f.Name(), "todo")
 }
 
 func CheckTodo(todo string) string {
-	m := ParseContent(todo)
+	m := utils.ParseContent(todo)
 
 	if strings.Contains(m, "[x]") {
 		return m[2:]
@@ -72,7 +74,7 @@ func CheckTodo(todo string) string {
 }
 
 func GetTodoFilePaths() []fs.FileInfo {
-	p := GetPath([]string{"todo"})
+	p := utils.GetPath([]string{"todo"})
 
 	f, err := ioutil.ReadDir(p)
 	if err != nil {
@@ -83,8 +85,8 @@ func GetTodoFilePaths() []fs.FileInfo {
 }
 
 func GetTodoFromFile(fileName string) string {
-	path := GetPath([]string{"todo", fileName})
-	todo := GetDataFromFile(path)
+	path := utils.GetPath([]string{"todo", fileName})
+	todo := utils.GetDataFromFile(path)
 	return todo
 }
 
@@ -95,7 +97,7 @@ func GetAllTodos() []string {
 
 	for _, f := range files {
 		todo := GetTodoFromFile(f.Name())
-		todos = append(todos, ParseContent(todo))
+		todos = append(todos, utils.ParseContent(todo))
 	}
 
 	return todos
@@ -106,7 +108,7 @@ func ListTodos() {
 
 	for i, f := range files {
 		todo := GetTodoFromFile(f.Name())
-		task := ParseContent(todo)
+		task := utils.ParseContent(todo)
 
 		fmt.Printf("%v. %s", i+1, task[6:])
 	}

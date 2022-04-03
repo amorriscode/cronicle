@@ -2,6 +2,7 @@ package delete
 
 import (
 	"cronicle/utils"
+	"cronicle/utils/todo"
 	"fmt"
 	"strconv"
 
@@ -30,5 +31,5 @@ func run(cmd *cobra.Command, args []string) {
 	}
 
 	utils.DeleteFile(files[n-1].Name(), "todo")
-	utils.ListTodos()
+	todo.ListTodos()
 }

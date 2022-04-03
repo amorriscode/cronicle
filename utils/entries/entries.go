@@ -1,7 +1,8 @@
-package utils
+package entries
 
 import (
 	"cronicle/ui/constants"
+	"cronicle/utils"
 	"errors"
 	"fmt"
 	"log"
@@ -10,17 +11,13 @@ import (
 	"time"
 )
 
-type WriteEntryParams struct {
-	Message, Tags, Date string
-}
-
 func getDate() string {
 	time := time.Now()
 	return time.Format("2006-01-02")
 }
 
-func WriteOrCreateEntry(w WriteEntryParams, t string) {
-	path := GetPath([]string{t, getDate() + ".md"})
+func WriteOrCreateEntry(w utils.WriteParams, t string) {
+	path := utils.GetPath([]string{t, getDate() + ".md"})
 	if _, err := os.Stat(path); err == nil {
 		// current Entry file exists
 		appendEntry(w, t)
@@ -28,25 +25,25 @@ func WriteOrCreateEntry(w WriteEntryParams, t string) {
 		// no Entry file created yet
 		createdDateTime := time.Now().Format("2006-01-02 15:04")
 		m := fmt.Sprintf("- %s\n", w.Message)
-		newEntry := composeEntry(WriteEntryParams{Message: m, Tags: w.Tags, Date: createdDateTime}, t)
-		WriteToFile(newEntry, GetPath([]string{t, getDate() + ".md"}))
+		newEntry := composeEntry(utils.WriteParams{Message: m, Tags: w.Tags, Date: createdDateTime}, t)
+		utils.WriteToFile(newEntry, utils.GetPath([]string{t, getDate() + ".md"}))
 	} else {
 		log.Fatal(constants.ERROR_WRITE_FILE, err)
 	}
 
 }
 
-func appendEntry(w WriteEntryParams, t string) {
+func appendEntry(w utils.WriteParams, t string) {
 	// merge tags
-	path := GetPath([]string{t, getDate() + ".md"})
-	entry := GetDataFromFile(path)
-	tags := ParseHeader(entry).Tags
-	content := ParseContent(entry)
+	path := utils.GetPath([]string{t, getDate() + ".md"})
+	entry := utils.GetDataFromFile(path)
+	tags := utils.ParseHeader(entry).Tags
+	content := utils.ParseContent(entry)
 
 	// add tags only if they don't already exist
 	if w.Tags != "" {
 		for _, t := range strings.Split(w.Tags, ",") {
-			if !Contains(tags, t) {
+			if !utils.Contains(tags, t) {
 				tags = append(tags, t)
 			}
 		}
@@ -59,12 +56,12 @@ func appendEntry(w WriteEntryParams, t string) {
 	newContent.WriteString(m)
 
 	// compose new entry with new content, joined tags and previous created at date
-	newEntry := composeEntry(WriteEntryParams{Message: newContent.String(), Tags: strings.Join(tags, ","), Date: ParseHeader(entry).Date}, t)
+	newEntry := composeEntry(utils.WriteParams{Message: newContent.String(), Tags: strings.Join(tags, ","), Date: utils.ParseHeader(entry).Date}, t)
 
-	WriteToFile(newEntry, path)
+	utils.WriteToFile(newEntry, path)
 }
 
-func composeEntry(w WriteEntryParams, t string) string {
+func composeEntry(w utils.WriteParams, t string) string {
 	output := strings.Builder{}
 	// header
 	output.WriteString("---\n")

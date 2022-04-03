@@ -3,6 +3,7 @@ package todo
 import (
 	"cronicle/ui/components/pages"
 	"cronicle/utils"
+	"cronicle/utils/todo"
 	"fmt"
 	"strings"
 
@@ -148,6 +149,6 @@ func (m *CreateModel) validateInput() {
 }
 
 func (m CreateModel) createTodo() {
-	todo := utils.ComposeTodo(utils.WriteParams{Message: m.inputs[0].Value(), Tags: m.inputs[1].Value(), Date: m.inputs[2].Value()})
+	todo := todo.ComposeTodo(utils.WriteParams{Message: m.inputs[0].Value(), Tags: m.inputs[1].Value(), Date: m.inputs[2].Value()})
 	utils.WriteToFile(todo, utils.GetPath([]string{"todo", uuid.NewString() + ".md"}))
 }

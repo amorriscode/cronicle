@@ -4,6 +4,7 @@ import (
 	"cronicle/ui/constants"
 	"cronicle/ui/context"
 	"cronicle/utils"
+	"cronicle/utils/todo"
 
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/viewport"
@@ -107,6 +108,6 @@ func (m *SectionModel) UpdateContext(ctx *context.Context) {
 
 func getTodos() []string {
 	var r []string
-	todos := utils.GetAllTodos()
+	todos := todo.GetAllTodos()
 	return append(r, todos...)
 }

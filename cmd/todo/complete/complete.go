@@ -2,6 +2,7 @@ package complete
 
 import (
 	"cronicle/utils"
+	"cronicle/utils/todo"
 	"fmt"
 	"strconv"
 
@@ -28,6 +29,6 @@ func run(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	utils.MarkCompleted(files[n-1])
-	utils.ListTodos()
+	todo.MarkCompleted(files[n-1])
+	todo.ListTodos()
 }
