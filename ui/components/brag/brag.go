@@ -5,6 +5,6 @@ import (
 	"cronicle/ui/context"
 )
 
-func New(ctx *context.Context) section.Model {
+func NewSectionUI(ctx *context.Context) section.Model {
 	return section.New(ctx, "brag")
 }

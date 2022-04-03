@@ -19,9 +19,8 @@ import (
 
 type Model struct {
 	currSection int
-	keys        utils.KeyMap
 	ctx         context.Context
-	todo        todo.Model
+	todo        todo.SectionModel
 	daily       section.Model
 	brag        section.Model
 	tabs        tabs.Model
@@ -31,15 +30,14 @@ type Model struct {
 func New() Model {
 	m := Model{
 		currSection: 0,
-		keys:        utils.Keys,
 		tabs:        tabs.New(),
 		help:        help.New(),
 	}
 
 	// TODO: abstract sections out to be more dynamic
-	m.todo = todo.New(&m.ctx)
-	m.daily = daily.New(&m.ctx)
-	m.brag = brag.New(&m.ctx)
+	m.todo = todo.NewSectionUI(&m.ctx)
+	m.daily = daily.NewSectionUI(&m.ctx)
+	m.brag = brag.NewSectionUI(&m.ctx)
 
 	return m
 }
@@ -60,16 +58,13 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch {
-		case key.Matches(msg, m.keys.PrevSection):
+		case key.Matches(msg, utils.Keys.PrevSection):
 			prevSection := m.getPrevSection()
 			m.setCurrSection(prevSection)
 
-		case key.Matches(msg, m.keys.NextSection):
+		case key.Matches(msg, utils.Keys.NextSection):
 			nextSection := m.getNextSection()
 			m.setCurrSection(nextSection)
-
-		case key.Matches(msg, m.keys.Quit):
-			cmd = tea.Quit
 		}
 
 	case tea.WindowSizeMsg:
