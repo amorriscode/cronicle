@@ -6,8 +6,6 @@ import (
 	"io/fs"
 	"io/ioutil"
 	"log"
-	"os"
-	"path/filepath"
 	"strings"
 	"time"
 )
@@ -56,16 +54,7 @@ func MarkCompleted(f fs.FileInfo) {
 	// get today's log file, update log file: add to exisiting tags, append complted todo
 	// if file does not exist, call create log file and update log file
 	WriteOrCreateDaily(WriteDailyParams{Message: checkedTodo, Tags: strings.Join(tags, ",")})
-	DeleteTodo(f.Name())
-}
-
-func DeleteTodo(fileName string) {
-	dirPath := GetPath([]string{"todo"})
-	e := os.Remove(filepath.Join(dirPath, fileName))
-
-	if e != nil {
-		log.Fatal(constants.ERROR_DELETE_FILE, e)
-	}
+	DeleteFile(f.Name(), "todo")
 }
 
 func CheckTodo(todo string) string {

@@ -10,7 +10,7 @@ import (
 
 func New() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update [ID]",
+		Use:   "update [ID!]",
 		Short: "update a daily entry",
 		Long:  "update a daily entry",
 		Run:   run,

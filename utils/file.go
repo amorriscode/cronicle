@@ -2,11 +2,13 @@ package utils
 
 import (
 	"cronicle/ui/constants"
+	"fmt"
 	"io/fs"
 	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 
 	"github.com/adrg/frontmatter"
@@ -55,6 +57,28 @@ func EditFile(path string) {
 	v.Stdout = os.Stdout
 	if err := v.Run(); err != nil {
 		log.Fatal(constants.ERROR_OPEN_FILE, err)
+	}
+}
+
+func DeleteFile(f string, t string) {
+	d := GetPath([]string{t})
+	e := os.Remove(filepath.Join(d, f))
+
+	if e != nil {
+		log.Fatal(constants.ERROR_DELETE_FILE, e)
+	}
+}
+
+func ListFiles(t string) {
+	path := GetPath([]string{t})
+
+	files, err := ioutil.ReadDir(path)
+	if err != nil {
+		log.Fatal(constants.ERROR_LIST_FILE, err)
+	}
+
+	for i, f := range files {
+		fmt.Printf("%v. %s", i+1, f.Name())
 	}
 }
 
