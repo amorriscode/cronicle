@@ -3,8 +3,10 @@ package entries
 import (
 	"cronicle/ui/constants"
 	"cronicle/utils"
+	"cronicle/utils/prompts"
 	"errors"
 	"fmt"
+	"io/fs"
 	"log"
 	"os"
 	"strings"
@@ -84,4 +86,78 @@ func composeEntry(w utils.WriteParams, t string) string {
 	output.WriteString(strings.TrimSpace(w.Message))
 
 	return output.String()
+}
+
+func EditEntry(args []string, t string) {
+	files := utils.GetAllFiles(t)
+	var id int
+
+	if len(args) > 0 {
+		// user has given an arguement
+		argId := utils.GetIdFromArg(args, files)
+		if argId == -1 {
+			fmt.Printf("Invalid argument")
+			return
+		}
+		id = argId
+	} else {
+		// user selects from options
+		id = GetIdFromOptions(files, t, "update")
+	}
+
+	path := utils.GetPath([]string{t, files[id].Name()})
+
+	utils.EditFile(path)
+}
+
+func DeleteEntry(args []string, t string) {
+	files := utils.GetAllFiles(t)
+	var id int
+
+	if len(args) > 0 {
+		// user has given an arguement
+		argId := utils.GetIdFromArg(args, files)
+		if argId == -1 {
+			fmt.Printf("Invalid argument")
+			return
+		}
+		id = argId
+	} else {
+		// user selects from options
+		id = GetIdFromOptions(files, t, "delete")
+	}
+
+	utils.DeleteFile(files[id].Name(), t)
+}
+
+func GetIdFromOptions(files []fs.FileInfo, t string, action string) int {
+	var id int
+	if t == "todo" {
+		id = GetIdFromTodoOptions(files, t, action)
+	} else {
+		id = GetIdFromEntryOptions(files, t, action)
+	}
+	return id
+}
+
+func GetIdFromEntryOptions(files []fs.FileInfo, t string, action string) int {
+	options := prompts.GetEntryDisplayOptions(t, files)
+	i, err := prompts.SelectEntry(options, action)
+
+	if err != nil {
+		log.Fatal(constants.ERROR_PROMPT, err)
+	}
+
+	return i
+}
+
+func GetIdFromTodoOptions(files []fs.FileInfo, t string, action string) int {
+	options := prompts.GetTodoDisplayOptions(files)
+	i, err := prompts.SelectTodo(options, action)
+
+	if err != nil {
+		log.Fatal(constants.ERROR_PROMPT, err)
+	}
+
+	return i
 }

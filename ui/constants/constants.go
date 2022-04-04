@@ -20,4 +20,8 @@ const (
 	ERROR_CLOSE_FILE  = "Darn, error closing file: %w"
 	ERROR_LIST_FILE   = "Darn, error listing files: %w"
 	ERROR_DELETE_FILE = "Darn, error deleting file: %w"
+	ERROR_PROMPT      = "Darn, error with prompt: %w"
 )
+
+const MaxLengthDisplayOption = 20
+const MaxLengthDetails = 50

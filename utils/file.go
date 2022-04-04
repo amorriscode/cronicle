@@ -2,6 +2,7 @@ package utils
 
 import (
 	"cronicle/ui/constants"
+	"cronicle/utils/types"
 	"fmt"
 	"io/fs"
 	"io/ioutil"
@@ -25,7 +26,10 @@ func GetDataFromFile(path string) string {
 
 func GetAllFiles(d string) []fs.FileInfo {
 	p := GetPath([]string{d})
-	f, _ := ioutil.ReadDir(p)
+	f, err := ioutil.ReadDir(p)
+	if err != nil {
+		log.Fatal(constants.ERROR_LIST_FILE, err)
+	}
 	return f
 }
 
@@ -73,7 +77,7 @@ func ListFiles(t string) {
 	}
 
 	for i, f := range files {
-		fmt.Printf("%v. %s", i+1, f.Name())
+		fmt.Printf("%v. %s\n", i+1, f.Name())
 	}
 }
 
@@ -94,15 +98,8 @@ func ParseContent(content string) string {
 	return c
 }
 
-type Header struct {
-	Date string   `yaml:"date"`
-	Due  string   `yaml:"due"`
-	Type string   `yaml:"type"`
-	Tags []string `yaml:"tags"`
-}
-
-func ParseHeader(content string) Header {
-	var matter Header
+func ParseHeader(content string) types.Header {
+	var matter types.Header
 
 	_, err := frontmatter.Parse(strings.NewReader(content), &matter)
 	if err != nil {
