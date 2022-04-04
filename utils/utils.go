@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"io/fs"
+	"strconv"
 	"strings"
 )
 
@@ -43,4 +45,12 @@ func TruncateText(s string, max int) string {
 	}
 
 	return s[:strings.LastIndex(s[:max], " ")] + "..."
+}
+
+func GetIdFromArg(args []string, files []fs.FileInfo) int {
+	n, err := strconv.Atoi(args[0])
+	if err != nil || n == 0 || n > len(files) {
+		return -1
+	}
+	return n - 1
 }

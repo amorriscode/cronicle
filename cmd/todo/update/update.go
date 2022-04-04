@@ -1,7 +1,8 @@
 package update
 
 import (
-	"cronicle/utils/todo"
+	"cronicle/utils/entries"
+	"log"
 
 	"github.com/spf13/cobra"
 )
@@ -18,5 +19,6 @@ func New() *cobra.Command {
 }
 
 func run(cmd *cobra.Command, args []string) {
-	todo.EditTodo()
+	log.Println(args)
+	entries.EditEntry(args, "todo")
 }

@@ -3,15 +3,14 @@ package entries
 import (
 	"cronicle/ui/constants"
 	"cronicle/utils"
-	"cronicle/utils/types"
+	"cronicle/utils/prompts"
 	"errors"
 	"fmt"
+	"io/fs"
 	"log"
 	"os"
 	"strings"
 	"time"
-
-	"github.com/adrg/frontmatter"
 )
 
 func getDate() string {
@@ -89,39 +88,76 @@ func composeEntry(w utils.WriteParams, t string) string {
 	return output.String()
 }
 
-func DeleteEntry(t string, id int) {
+func EditEntry(args []string, t string) {
 	files := utils.GetAllFiles(t)
+	var id int
 
-	utils.DeleteFile(files[id].Name(), t)
-}
-
-func EditEntry(t string, id int) {
-	files := utils.GetAllFiles(t)
+	if len(args) > 0 {
+		// user has given an arguement
+		argId := utils.GetIdFromArg(args, files)
+		if argId == -1 {
+			fmt.Printf("Invalid argument")
+			return
+		}
+		id = argId
+	} else {
+		// user selects from options
+		id = GetIdFromOptions(files, t, "update")
+	}
 
 	path := utils.GetPath([]string{t, files[id].Name()})
 
 	utils.EditFile(path)
 }
 
-func GetEntryDisplayOptions(t string) []types.EntryProperties {
-	var matter types.EntryProperties
-	var options []types.EntryProperties
+func DeleteEntry(args []string, t string) {
 	files := utils.GetAllFiles(t)
+	var id int
 
-	for _, f := range files {
-		path := utils.GetPath([]string{t, f.Name()})
-		content := utils.GetDataFromFile(path)
-		rest, err := frontmatter.Parse(strings.NewReader(content), &matter)
-		if err != nil {
-			log.Println(err)
+	if len(args) > 0 {
+		// user has given an arguement
+		argId := utils.GetIdFromArg(args, files)
+		if argId == -1 {
+			fmt.Printf("Invalid argument")
+			return
 		}
-		a := strings.Split(string(rest), "\n")
-		b := strings.Join(a, ",")
-		matter.Entry = utils.TruncateText(string(rest)[6:], constants.MaxLengthDisplayOption)
-		matter.EntryDetails = utils.TruncateText(b, constants.MaxLengthDetails)
-		matter.FileName = f.Name()
-		options = append(options, matter)
+		id = argId
+	} else {
+		// user selects from options
+		id = GetIdFromOptions(files, t, "delete")
 	}
 
-	return options
+	utils.DeleteFile(files[id].Name(), t)
+}
+
+func GetIdFromOptions(files []fs.FileInfo, t string, action string) int {
+	var id int
+	if t == "todo" {
+		id = GetIdFromTodoOptions(files, t, action)
+	} else {
+		id = GetIdFromEntryOptions(files, t, action)
+	}
+	return id
+}
+
+func GetIdFromEntryOptions(files []fs.FileInfo, t string, action string) int {
+	options := prompts.GetEntryDisplayOptions(t, files)
+	i, err := prompts.SelectEntry(options, action)
+
+	if err != nil {
+		log.Fatal(constants.ERROR_PROMPT, err)
+	}
+
+	return i
+}
+
+func GetIdFromTodoOptions(files []fs.FileInfo, t string, action string) int {
+	options := prompts.GetTodoDisplayOptions(files)
+	i, err := prompts.SelectTodo(options, action)
+
+	if err != nil {
+		log.Fatal(constants.ERROR_PROMPT, err)
+	}
+
+	return i
 }

@@ -1,7 +1,7 @@
 package update
 
 import (
-	"cronicle/utils/brag"
+	"cronicle/utils/entries"
 
 	"github.com/spf13/cobra"
 )
@@ -18,5 +18,5 @@ func New() *cobra.Command {
 }
 
 func run(cmd *cobra.Command, args []string) {
-	brag.EditBrag()
+	entries.EditEntry(args, "brag")
 }
